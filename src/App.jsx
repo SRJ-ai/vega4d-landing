@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { BrainCircuit, Database, Hand, Activity, ChevronRight, Mail, Phone, MapPin, MessageCircle, CheckCircle, Loader2, Play } from 'lucide-react';
+import { Hand, Eye, Zap, Circle, Sparkles, ChevronRight, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
 import { supabase } from './lib/supabase';
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+// Animation variants
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
 };
 
-const staggerContainer = {
+const stagger = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.15 }
-  }
+  visible: { opacity: 1, transition: { staggerChildren: 0.2 } }
 };
 
 function App() {
@@ -22,7 +20,7 @@ function App() {
   const [submitStatus, setSubmitStatus] = useState(null);
   
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
+  const yDrift = useTransform(scrollYProgress, [0, 1], [0, 150]);
 
   const handleInputChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
@@ -46,373 +44,178 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-slate-200 font-sans selection:bg-primary-500/30 relative">
+    <div className="min-h-screen bg-[var(--color-void)] text-[var(--color-bone)] font-sans selection:bg-[var(--color-gold)]/30 relative overflow-hidden">
       
-      {/* Background Elements */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-grid-pattern opacity-[0.15]"></div>
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary-600/20 rounded-full blur-[120px] mix-blend-screen"></div>
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-teal-600/10 rounded-full blur-[120px] mix-blend-screen"></div>
+      {/* Global Film Grain & Texture */}
+      <div className="noise-overlay"></div>
+
+      {/* Divine Lighting Element (Single source of warm light) */}
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] pointer-events-none z-0">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,178,77,0.15),transparent_60%)] mix-blend-screen blur-[80px]"></div>
+        {/* Subtle Ember core */}
+        <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-[var(--color-ember)] opacity-20 rounded-full blur-[100px] animate-pulse"></div>
       </div>
 
       <div className="relative z-10">
-        {/* Navigation */}
-        <nav className="fixed w-full z-50 glass border-b-0 border-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-              <motion.div 
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5 }}
-                className="flex items-center gap-3"
-              >
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary-600 to-teal-400 flex items-center justify-center shadow-[0_0_20px_rgba(59,130,246,0.3)]">
-                  <Hand className="w-5 h-5 text-white" />
-                </div>
-                <span className="font-bold text-xl tracking-tight text-white">
-                  Vega4D
-                </span>
-              </motion.div>
-              <motion.div 
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="hidden md:block"
-              >
-                <div className="flex items-center space-x-8">
-                  <a href="#about" className="hover:text-white transition-colors text-sm font-medium text-slate-400">Platform</a>
-                  <a href="#datasets" className="hover:text-white transition-colors text-sm font-medium text-slate-400">Datasets</a>
-                  <a href="#contact" className="hover:text-white transition-colors text-sm font-medium text-slate-400">Enterprise</a>
-                  <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="relative group overflow-hidden bg-white/10 hover:bg-white/20 border border-white/10 text-white px-5 py-2 rounded-full text-sm font-medium transition-all backdrop-blur-md">
-                    <span className="relative z-10">Book Demo</span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-teal-500/20 translate-y-[100%] group-hover:translate-y-0 transition-transform duration-300"></div>
-                  </a>
-                </div>
-              </motion.div>
-            </div>
+        {/* Nav - Minimalist */}
+        <nav className="fixed w-full z-50 glass border-b border-white/5">
+          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="flex items-center gap-3">
+              <Sparkles className="w-5 h-5 text-[var(--color-bone)]" />
+              <span className="font-bold text-xl tracking-[0.2em] uppercase text-[var(--color-bone)]">Vega4D</span>
+            </motion.div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.2 }} className="hidden md:flex items-center space-x-10 text-sm tracking-widest uppercase">
+              <a href="#platform" className="hover:text-[var(--color-gold)] transition-colors">Platform</a>
+              <a href="#contact" className="hover:text-[var(--color-gold)] transition-colors">Enterprise</a>
+            </motion.div>
           </div>
         </nav>
 
-        {/* Hero Section */}
-        <section className="pt-40 pb-32 lg:pt-56 lg:pb-40 overflow-hidden relative">
-          <motion.div style={{ y }} className="absolute inset-0 z-0 opacity-30">
-            <div className="absolute top-[20%] left-[20%] w-[500px] h-[500px] bg-primary-500 rounded-full blur-[150px] mix-blend-screen animate-pulse"></div>
-            <div className="absolute top-[30%] right-[20%] w-[400px] h-[400px] bg-indigo-500 rounded-full blur-[120px] mix-blend-screen" style={{ animation: 'pulse 4s infinite alternate-reverse' }}></div>
-          </motion.div>
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <motion.div 
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-              className="text-center max-w-4xl mx-auto"
-            >
-              <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-slate-300 text-sm font-medium mb-8 backdrop-blur-md">
-                <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
-                VLA Foundation Models Ready
+        {/* Hero Section - Cloud Trance Weightless */}
+        <section className="min-h-screen flex items-center pt-20 relative">
+          <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
+            <motion.div variants={stagger} initial="hidden" animate="visible" className="max-w-4xl">
+              <motion.div variants={fadeUp} className="mb-6">
+                <span className="text-[var(--color-gold)] tracking-[0.3em] uppercase text-xs font-semibold">
+                  Ascension through precision
+                </span>
               </motion.div>
               
-              <motion.h1 variants={fadeInUp} className="text-6xl lg:text-8xl font-extrabold tracking-tighter mb-8 text-white leading-[1.1]">
-                High-Fidelity <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-indigo-400 to-teal-400 text-glow">
-                  Robotic Dexterity
+              <motion.h1 variants={fadeUp} className="text-6xl md:text-8xl font-light tracking-tight mb-8 leading-[1.05]">
+                Robotic Dexterity, <br />
+                <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-gold)] to-[var(--color-bone)] text-glow-gold">
+                  Perfected.
                 </span>
               </motion.h1>
               
-              <motion.p variants={fadeInUp} className="text-xl lg:text-2xl text-slate-400 mb-12 leading-relaxed max-w-2xl mx-auto font-light">
-                Premium multi-modal kinematics data. We capture, annotate, and synthesize complex human demonstrations with sub-millimeter precision.
+              <motion.p variants={fadeUp} className="text-xl md:text-2xl text-white/50 font-light max-w-2xl leading-relaxed mb-12">
+                We capture human kinematics in a multi-modal void. Zero information loss. Sub-millimeter fidelity. The definitive dataset for VLA foundation models.
               </motion.p>
               
-              <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="#datasets" className="group relative inline-flex justify-center items-center gap-2 bg-white text-black px-8 py-4 rounded-full text-lg font-semibold transition-all hover:scale-105">
-                  Explore Datasets
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </a>
-                <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="group inline-flex justify-center items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-4 rounded-full text-lg font-medium transition-all backdrop-blur-md hover:border-white/20">
-                  <Play className="w-4 h-4 fill-current opacity-70 group-hover:opacity-100 transition-opacity" />
-                  Watch Platform Demo
+              <motion.div variants={fadeUp} className="flex gap-6 items-center">
+                <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="group relative inline-flex items-center justify-center bg-[var(--color-bone)] text-[var(--color-void)] px-8 py-4 text-sm tracking-widest uppercase font-bold overflow-hidden transition-all hover:scale-105">
+                  <span className="relative z-10 flex items-center gap-2">
+                    Initiate Sequence <ChevronRight className="w-4 h-4" />
+                  </span>
                 </a>
               </motion.div>
             </motion.div>
           </div>
+          
+          {/* Crystalline Iridescent floating element */}
+          <motion.div style={{ y: yDrift }} className="absolute bottom-20 right-20 w-[400px] h-[400px] opacity-30 mix-blend-screen pointer-events-none hidden lg:block">
+            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,var(--color-violet),transparent_60%)] blur-[60px]"></div>
+            <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] rounded-full bg-[radial-gradient(circle_at_center,var(--color-cyan),transparent_60%)] blur-[40px]"></div>
+          </motion.div>
         </section>
 
-        {/* Bento Grid Features */}
-        <section id="about" className="py-32 relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-100px" }}
-              variants={staggerContainer}
-              className="mb-20"
-            >
-              <motion.h2 variants={fadeInUp} className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-white">
-                Engineered for <span className="text-slate-400">Precision</span>
+        {/* Rhythmic Macro Montage Section */}
+        <section id="platform" className="py-40 relative border-t border-white/5 bg-[var(--color-void)]">
+          <div className="max-w-7xl mx-auto px-6">
+            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={stagger} className="mb-32 flex flex-col items-center text-center">
+              <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-wide mb-6">
+                The Anatomy of <span className="text-[var(--color-gold)] italic">Motion</span>
               </motion.h2>
-              <motion.p variants={fadeInUp} className="text-xl text-slate-400 max-w-2xl font-light">
-                Our proprietary capture pipeline ensures zero information loss between human demonstration and robot execution.
+              <motion.p variants={fadeUp} className="text-white/50 max-w-2xl mx-auto font-light leading-relaxed">
+                Our capture pipeline isolates pure interaction. High contrast. Sharp focus.
               </motion.p>
             </motion.div>
 
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="grid grid-cols-1 md:grid-cols-3 gap-6"
-            >
-              {/* Large Bento Item */}
-              <motion.div variants={fadeInUp} className="md:col-span-2 glass-card p-10 group relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8">
-                    <Activity className="w-7 h-7 text-primary-400" />
-                  </div>
-                  <h3 className="text-3xl font-semibold mb-4 text-white tracking-tight">Multi-Modal Sync Capture</h3>
-                  <p className="text-slate-400 text-lg leading-relaxed max-w-md">
-                    Synchronized multi-camera volumetric setups capturing RGB, Depth, and sub-millimeter joint kinematics simultaneously at 120fps.
-                  </p>
-                </div>
-                {/* Decorative element */}
-                <div className="absolute right-0 bottom-0 w-64 h-64 opacity-20 pointer-events-none translate-x-1/4 translate-y-1/4">
-                  <div className="w-full h-full border-[1px] border-primary-500 rounded-full absolute animate-[ping_3s_infinite]"></div>
-                  <div className="w-3/4 h-3/4 border-[1px] border-primary-400 rounded-full absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
-                </div>
-              </motion.div>
-
-              {/* Smaller Bento Item */}
-              <motion.div variants={fadeInUp} className="glass-card p-10 group relative overflow-hidden">
-                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                 <div className="relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8">
-                    <BrainCircuit className="w-7 h-7 text-indigo-400" />
-                  </div>
-                  <h3 className="text-2xl font-semibold mb-4 text-white tracking-tight">Expert Annotation</h3>
-                  <p className="text-slate-400 leading-relaxed">
-                    Frame-by-frame joint tracking, complex action segmentation, and object interaction labeling by robotics domain experts.
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Smaller Bento Item */}
-              <motion.div variants={fadeInUp} className="md:col-span-3 glass-card p-10 flex flex-col md:flex-row items-center gap-10 group overflow-hidden relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-teal-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <div className="md:w-1/3 relative z-10">
-                  <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mb-8">
-                    <Database className="w-7 h-7 text-teal-400" />
-                  </div>
-                  <h3 className="text-3xl font-semibold mb-4 text-white tracking-tight">VLA Ready</h3>
-                  <p className="text-slate-400 text-lg leading-relaxed">
-                    Pre-processed, normalized, and instantly formatted for the latest Vision-Language-Action architectures. Skip the data wrangling.
-                  </p>
-                </div>
-                <div className="md:w-2/3 w-full h-48 bg-black/50 rounded-2xl border border-white/5 relative overflow-hidden flex items-center p-6">
-                   {/* Abstract code/data viz */}
-                   <div className="w-full space-y-3 opacity-60">
-                     <div className="h-4 w-1/3 bg-teal-500/20 rounded"></div>
-                     <div className="h-4 w-3/4 bg-slate-700/50 rounded"></div>
-                     <div className="h-4 w-1/2 bg-slate-700/50 rounded"></div>
-                     <div className="h-4 w-5/6 bg-slate-700/50 rounded"></div>
-                     <div className="h-4 w-1/4 bg-primary-500/20 rounded"></div>
-                   </div>
-                   <div className="absolute right-0 top-0 h-full w-32 bg-gradient-to-l from-black/80 to-transparent"></div>
-                </div>
-              </motion.div>
-
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Datasets Section */}
-        <section id="datasets" className="py-32 relative border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6"
-            >
-              <div>
-                <motion.h2 variants={fadeInUp} className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-white">
-                  Curated <span className="text-slate-400">Datasets</span>
-                </motion.h2>
-                <motion.p variants={fadeInUp} className="text-xl text-slate-400 max-w-xl font-light">
-                  Accelerate your R&D instantly. High-fidelity motion data for fundamental manipulation tasks.
-                </motion.p>
-              </div>
-              <motion.a variants={fadeInUp} href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="text-white hover:text-primary-400 font-medium inline-flex items-center gap-2 group pb-2 border-b border-white/20 hover:border-primary-400 transition-colors">
-                Request Custom Collection 
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </motion.a>
-            </motion.div>
-
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="grid lg:grid-cols-2 gap-8"
-            >
-              <motion.div variants={fadeInUp} className="glass-card overflow-hidden group">
-                <div className="h-72 bg-black/60 relative overflow-hidden flex items-center justify-center border-b border-white/5">
-                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.15),transparent_70%)]"></div>
-                   <div className="grid grid-cols-8 gap-1 w-full px-12 opacity-50 mix-blend-screen group-hover:scale-110 transition-transform duration-[10s] ease-out">
-                      {Array.from({length: 32}).map((_, i) => (
-                        <div key={i} className="h-1 rounded-full bg-primary-500 animate-pulse" style={{ animationDelay: `${i * 50}ms`, animationDuration: '2s' }}></div>
-                      ))}
-                   </div>
-                   <div className="absolute bottom-6 left-6 glass px-4 py-2 rounded-xl text-xs font-medium text-white tracking-wider font-mono border-white/10">
-                     1M+ FRAMES • 21 KEYPOINTS
-                   </div>
-                </div>
-                <div className="p-10">
-                  <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Dexterous Manipulation v1</h3>
-                  <p className="text-slate-400 mb-8 leading-relaxed">
-                    In-hand manipulation, re-grasping, and complex tool usage (screwdrivers, pens, scissors). Includes highly accurate contact-force estimates.
-                  </p>
-                  <div className="flex gap-2 flex-wrap">
-                    {['RGB-D', '6D Poses', 'Tool Use'].map(tag => (
-                      <span key={tag} className="px-4 py-1.5 bg-white/5 rounded-full text-xs font-medium text-slate-300 border border-white/10">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div variants={fadeInUp} className="glass-card overflow-hidden group">
-                <div className="h-72 bg-black/60 relative overflow-hidden flex items-center justify-center border-b border-white/5">
-                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(20,184,166,0.15),transparent_70%)]"></div>
-                   <div className="w-full flex items-center justify-center gap-8 opacity-50 mix-blend-screen group-hover:scale-110 transition-transform duration-[10s] ease-out">
-                      <div className="w-24 h-24 border border-teal-500/30 rounded-full animate-[spin_4s_linear_infinite] flex items-center justify-center">
-                        <div className="w-2 h-2 bg-teal-400 rounded-full absolute top-0"></div>
-                      </div>
-                      <div className="w-24 h-24 border border-teal-500/30 rounded-full animate-[spin_4s_linear_infinite_reverse] flex items-center justify-center">
-                        <div className="w-2 h-2 bg-teal-400 rounded-full absolute bottom-0"></div>
-                      </div>
-                   </div>
-                   <div className="absolute bottom-6 left-6 glass px-4 py-2 rounded-xl text-xs font-medium text-white tracking-wider font-mono border-white/10">
-                     500K FRAMES • BIMANUAL
-                   </div>
-                </div>
-                <div className="p-10">
-                  <h3 className="text-2xl font-bold mb-3 text-white tracking-tight">Bimanual Assembly Core</h3>
-                  <p className="text-slate-400 mb-8 leading-relaxed">
-                    Two-handed coordination for assembling small parts, cable routing, and folding. Unparalleled synchronization precision across 8 camera views.
-                  </p>
-                  <div className="flex gap-2 flex-wrap">
-                    {['Bimanual', 'Assembly', 'Deformables'].map(tag => (
-                      <span key={tag} className="px-4 py-1.5 bg-white/5 rounded-full text-xs font-medium text-slate-300 border border-white/10">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section id="contact" className="py-32 relative border-t border-white/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <motion.div 
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={staggerContainer}
-              className="glass-card p-8 lg:p-16 max-w-5xl mx-auto relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary-600/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3"></div>
+            {/* "Hero on Black" macro grids */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-[1px] bg-white/10 p-[1px]">
               
-              <div className="grid lg:grid-cols-2 gap-16 relative z-10">
-                <motion.div variants={fadeInUp}>
-                  <h2 className="text-4xl lg:text-5xl font-bold mb-6 tracking-tight text-white">Scale your <br/>robotics data.</h2>
-                  <p className="text-slate-400 mb-12 text-lg leading-relaxed font-light">
-                    Access existing datasets immediately or request custom data collection tailored to your specific end-effectors.
-                  </p>
-                  <div className="space-y-8">
-                    {[
-                      { icon: <Mail className="w-5 h-5" />, label: "Email", value: "data@vega4d.ai" },
-                      { icon: <Phone className="w-5 h-5" />, label: "Phone", value: "+1 (555) 019-2834" },
-                      { icon: <MapPin className="w-5 h-5" />, label: "HQ", value: "San Francisco, CA" }
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-5">
-                        <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary-400">
-                          {item.icon}
-                        </div>
-                        <div>
-                          <p className="text-sm text-slate-500 font-medium mb-1">{item.label}</p>
-                          <p className="font-semibold text-white text-lg tracking-tight">{item.value}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
+              {/* Macro Shot 1 */}
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.1 }} className="bg-[var(--color-void)] aspect-square flex flex-col items-center justify-center relative group overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,178,77,0.05),transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                <Eye className="w-16 h-16 text-white/20 mb-8 group-hover:text-[var(--color-gold)] transition-colors duration-700" strokeWidth={1} />
+                <h3 className="text-sm tracking-[0.2em] uppercase text-white/40">Perception</h3>
+              </motion.div>
 
-                <motion.div variants={fadeInUp}>
-                  <form className="space-y-5" onSubmit={handleSubmit}>
-                    <div className="grid grid-cols-2 gap-5">
-                      <div>
-                        <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-primary-500/50 focus:bg-white/10 transition-all font-light" placeholder="First Name" />
-                      </div>
-                      <div>
-                        <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-primary-500/50 focus:bg-white/10 transition-all font-light" placeholder="Last Name" />
-                      </div>
-                    </div>
-                    <div>
-                      <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-primary-500/50 focus:bg-white/10 transition-all font-light" placeholder="Company Email" />
-                    </div>
-                    <div>
-                      <textarea name="message" value={formData.message} onChange={handleInputChange} required rows="4" className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white placeholder:text-slate-500 focus:outline-none focus:border-primary-500/50 focus:bg-white/10 transition-all font-light resize-none" placeholder="Tell us about your data needs..."></textarea>
-                    </div>
-                    
-                    {submitStatus === 'success' && (
-                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 bg-green-500/10 border border-green-500/20 rounded-2xl flex items-center gap-3 text-green-400">
-                        <CheckCircle className="w-5 h-5" />
-                        <span className="text-sm font-medium">Message sent securely.</span>
-                      </motion.div>
-                    )}
-                    {submitStatus === 'error' && (
-                      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm font-medium">
-                        Failed to send message. Please try again.
-                      </motion.div>
-                    )}
+              {/* Macro Shot 2 */}
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.1, delay: 0.2 }} className="bg-[var(--color-void)] aspect-square flex flex-col items-center justify-center relative group overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(138,107,255,0.05),transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                <Hand className="w-16 h-16 text-white/20 mb-8 group-hover:text-[var(--color-violet)] transition-colors duration-700" strokeWidth={1} />
+                <h3 className="text-sm tracking-[0.2em] uppercase text-white/40">Kinematics</h3>
+              </motion.div>
 
-                    <button type="submit" disabled={isSubmitting} className="w-full bg-white text-black font-semibold py-4 rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70 flex justify-center items-center gap-2">
-                      {isSubmitting ? <><Loader2 className="w-5 h-5 animate-spin" /> Sending...</> : 'Send Request'}
-                    </button>
-                  </form>
-                </motion.div>
+              {/* Macro Shot 3 */}
+              <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.1, delay: 0.4 }} className="bg-[var(--color-void)] aspect-square flex flex-col items-center justify-center relative group overflow-hidden">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(79,195,255,0.05),transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+                <Zap className="w-16 h-16 text-white/20 mb-8 group-hover:text-[var(--color-cyan)] transition-colors duration-700" strokeWidth={1} />
+                <h3 className="text-sm tracking-[0.2em] uppercase text-white/40">Actuation</h3>
+              </motion.div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* Single Shock Cut (Danger accent on monochrome) */}
+        <section className="py-32 bg-[var(--color-void)] border-y border-[var(--color-danger)]/20 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,42,42,0.05),transparent_60%)] mix-blend-screen"></div>
+          <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }} className="inline-flex items-center justify-center">
+              <Circle className="w-32 h-32 text-[var(--color-danger)] opacity-80 animate-pulse" strokeWidth={0.5} />
+              <div className="absolute font-mono text-[var(--color-danger)] text-xs tracking-widest uppercase text-glow-danger">
+                Override
               </div>
             </motion.div>
+            <h2 className="mt-12 text-4xl font-light text-[var(--color-danger)] tracking-tight">Zero latency. Infinite scale.</h2>
+          </div>
+        </section>
+
+        {/* Contact Void */}
+        <section id="contact" className="py-40 relative">
+          <div className="max-w-3xl mx-auto px-6">
+             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="glass-card p-12 relative overflow-hidden rounded-none border-white/10">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-violet)]/10 blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
+                
+                <motion.h2 variants={fadeUp} className="text-3xl font-light tracking-wide mb-2">Connect to the Hive</motion.h2>
+                <motion.p variants={fadeUp} className="text-white/40 mb-10 text-sm tracking-wide">Secure transmission channel for enterprise data requirements.</motion.p>
+                
+                <motion.form variants={fadeUp} className="space-y-8" onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-2 gap-8">
+                    <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light" placeholder="FIRST NAME" />
+                    <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light" placeholder="LAST NAME" />
+                  </div>
+                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light" placeholder="ORGANIZATION EMAIL" />
+                  <textarea name="message" value={formData.message} onChange={handleInputChange} required rows="3" className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light resize-none" placeholder="TRANSMISSION DETAILS..."></textarea>
+                  
+                  {submitStatus === 'success' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-green-400 text-sm tracking-wider flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" /> TRANSMISSION LOGGED
+                    </motion.div>
+                  )}
+                  {submitStatus === 'error' && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[var(--color-danger)] text-sm tracking-wider">
+                      TRANSMISSION FAILED. RETRY.
+                    </motion.div>
+                  )}
+
+                  <button type="submit" disabled={isSubmitting} className="group relative inline-flex items-center justify-center bg-white/5 border border-white/20 text-[var(--color-bone)] px-8 py-4 text-xs tracking-[0.2em] uppercase overflow-hidden transition-all hover:bg-[var(--color-gold)] hover:text-[var(--color-void)] hover:border-transparent w-full">
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Transmit'}
+                  </button>
+                </motion.form>
+             </motion.div>
           </div>
         </section>
 
         {/* Footer */}
-        <footer className="border-t border-white/10 bg-black py-12 relative z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <footer className="border-t border-white/10 bg-[var(--color-void)] py-12 relative z-10">
+          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-xs uppercase tracking-widest text-white/30">
             <div className="flex items-center gap-2">
-              <Hand className="w-5 h-5 text-white" />
-              <span className="font-bold text-lg text-white tracking-tight">Vega4D</span>
+              <Sparkles className="w-4 h-4" />
+              <span>Vega4D // {new Date().getFullYear()}</span>
             </div>
-            <p className="text-slate-500 text-sm font-light">© {new Date().getFullYear()} Vega4D Inc. All rights reserved.</p>
-            <div className="flex gap-6 text-sm text-slate-500 font-medium">
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <div className="flex gap-10">
+              <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
+              <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
             </div>
           </div>
         </footer>
 
-        {/* Floating WhatsApp Button */}
-        <a 
-          href="https://wa.me/15551234567" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="fixed bottom-6 right-6 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-green-400 hover:scale-110 transition-all z-50 group"
-        >
-          <MessageCircle className="w-6 h-6" />
-          <span className="absolute right-full mr-4 bg-white text-black font-medium text-sm px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-xl">
-            Chat with us
-          </span>
+        {/* Minimalist WhatsApp */}
+        <a href="https://wa.me/15551234567" target="_blank" rel="noopener noreferrer" className="fixed bottom-8 right-8 w-12 h-12 border border-white/20 rounded-full flex items-center justify-center text-white/50 hover:text-[var(--color-gold)] hover:border-[var(--color-gold)] transition-all z-50 mix-blend-screen backdrop-blur-md">
+          <MessageCircle className="w-5 h-5" />
         </a>
       </div>
     </div>
