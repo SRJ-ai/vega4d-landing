@@ -232,7 +232,7 @@ export function RequestAccess() {
                     <Calendar size={16} weight="duotone" />
                     cal.com/vega4d
                   </a>
-                  <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="u-btn u-btn--ghost !py-2.5 !text-[11px] !normal-case no-underline">
+                  <a href="https://wa.me/918309210440" target="_blank" rel="noopener noreferrer" className="u-btn u-btn--ghost !py-2.5 !text-[11px] !normal-case no-underline">
                     <WhatsappLogo size={16} weight="duotone" />
                     WhatsApp
                   </a>
