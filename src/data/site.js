@@ -183,26 +183,26 @@ for await (const shard of set.shards()) {
 };
 
 export const tiers = {
-  heading: 'Access, three ways.',
-  body: 'Terms are quoted against the set and the seat count. We do not publish a price we would then negotiate.',
+  heading: 'Flexible options for every stage',
+  body: 'Evaluate our data quality before committing to a full scale-up.',
   items: [
     {
-      name: 'Research',
-      who: 'Named academic groups and non-commercial labs',
-      includes: ['One set, one split', 'Citation licence', 'Shared support queue'],
-      terms: 'Terms on request',
+      name: 'Sample pack',
+      who: 'Perfect for evaluating data quality and fit before committing.',
+      includes: ['One sample dataset', 'Validation schemas', 'Non-commercial evaluation'],
+      terms: 'Free tier',
     },
     {
-      name: 'Lab',
-      who: 'Industrial research teams training in-house models',
-      includes: ['All sets, all splits', 'Commercial licence, per seat', 'Raw footage on request'],
-      terms: 'Terms on request',
+      name: 'Standard datasets',
+      who: 'Off-the-shelf datasets ready for training, with annotation add-ons.',
+      includes: ['DEX-1M & TOOL-320K sets', 'Commercial licence, per seat', 'Pre-computed metadata'],
+      terms: 'Pricing on request',
     },
     {
-      name: 'Enterprise',
-      who: 'Teams that need capture built to their own task list',
-      includes: ['Commissioned capture', 'Schema extensions', 'Dedicated capture window'],
-      terms: 'Terms on request',
+      name: 'Custom collection',
+      who: 'Full control over collection spec, annotation, delivery, and compliance.',
+      includes: ['Dedicated clean-room sessions', 'Custom object integration', 'SLA + dedicated QA'],
+      terms: 'Pricing on request',
     },
   ],
 };
