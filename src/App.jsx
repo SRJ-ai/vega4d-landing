@@ -1,7 +1,51 @@
-import React from 'react';
-import { BrainCircuit, Database, Hand, Activity, ChevronRight, Mail, Phone, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { BrainCircuit, Database, Hand, Activity, ChevronRight, Mail, Phone, MapPin, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { supabase } from './lib/supabase';
 
 function App() {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null); // 'success' | 'error' | null
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus(null);
+
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .insert([
+          { 
+            first_name: formData.firstName, 
+            last_name: formData.lastName, 
+            email: formData.email, 
+            message: formData.message 
+          }
+        ]);
+
+      if (error) throw error;
+      
+      setSubmitStatus('success');
+      setFormData({ firstName: '', lastName: '', email: '', message: '' });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-dark-900 text-slate-100 font-sans selection:bg-primary-500/30">
       {/* Navigation */}
@@ -21,7 +65,7 @@ function App() {
                 <a href="#about" className="hover:text-primary-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">About</a>
                 <a href="#datasets" className="hover:text-primary-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Datasets</a>
                 <a href="#contact" className="hover:text-primary-400 transition-colors px-3 py-2 rounded-md text-sm font-medium">Contact</a>
-                <a href="#contact" className="bg-primary-500 hover:bg-primary-400 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-[0_0_15px_rgba(59,130,246,0.5)]">
+                <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="bg-primary-500 hover:bg-primary-400 text-white px-4 py-2 rounded-full text-sm font-medium transition-all shadow-[0_0_15px_rgba(59,130,246,0.5)]">
                   Get Data
                 </a>
               </div>
@@ -50,7 +94,7 @@ function App() {
                 Explore Datasets
                 <ChevronRight className="w-5 h-5" />
               </a>
-              <a href="#contact" className="inline-flex justify-center items-center gap-2 glass hover:bg-dark-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all hover:-translate-y-1">
+              <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="inline-flex justify-center items-center gap-2 glass hover:bg-dark-700 text-white px-8 py-4 rounded-full text-lg font-semibold transition-all hover:-translate-y-1">
                 Talk to Sales
               </a>
             </div>
@@ -104,7 +148,7 @@ function App() {
               <h2 className="text-3xl lg:text-4xl font-bold mb-4">Available Datasets</h2>
               <p className="text-slate-400 max-w-xl">Accelerate your R&D with our pre-packaged, highly curated datasets for various manipulation tasks.</p>
             </div>
-            <a href="#contact" className="text-primary-400 hover:text-primary-300 font-medium inline-flex items-center gap-1 group">
+            <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="text-primary-400 hover:text-primary-300 font-medium inline-flex items-center gap-1 group">
               Request Custom Data Collection 
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </a>
@@ -113,7 +157,6 @@ function App() {
           <div className="grid lg:grid-cols-2 gap-8">
             <div className="glass rounded-3xl overflow-hidden group">
               <div className="h-64 bg-dark-800 relative overflow-hidden flex items-center justify-center">
-                 {/* Decorative background representing data */}
                  <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary-500 to-transparent"></div>
                  <div className="grid grid-cols-6 gap-2 w-full px-8 opacity-40 group-hover:scale-105 transition-transform duration-700">
                     {Array.from({length: 24}).map((_, i) => (
@@ -206,27 +249,45 @@ function App() {
               </div>
 
               <div>
-                <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+                <form className="space-y-6" onSubmit={handleSubmit}>
                   <div className="grid grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-slate-400 mb-2">First Name</label>
-                      <input type="text" className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="John" />
+                      <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="John" />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-slate-400 mb-2">Last Name</label>
-                      <input type="text" className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="Doe" />
+                      <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="Doe" />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-400 mb-2">Company Email</label>
-                    <input type="email" className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="john@company.com" />
+                    <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors" placeholder="john@company.com" />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-400 mb-2">How can we help?</label>
-                    <textarea rows="4" className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors resize-none" placeholder="Tell us about your data needs..."></textarea>
+                    <textarea name="message" value={formData.message} onChange={handleInputChange} required rows="4" className="w-full bg-dark-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-colors resize-none" placeholder="Tell us about your data needs..."></textarea>
                   </div>
-                  <button className="w-full bg-primary-500 hover:bg-primary-400 text-white font-semibold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:-translate-y-1">
-                    Send Message
+                  
+                  {submitStatus === 'success' && (
+                    <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl flex items-center gap-3 text-green-400">
+                      <CheckCircle className="w-5 h-5" />
+                      <span>Message sent successfully! We'll be in touch.</span>
+                    </div>
+                  )}
+
+                  {submitStatus === 'error' && (
+                    <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-sm">
+                      Failed to send message. Please try again or email us directly.
+                    </div>
+                  )}
+
+                  <button type="submit" disabled={isSubmitting} className="w-full bg-primary-500 hover:bg-primary-400 text-white font-semibold py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] hover:-translate-y-1 disabled:opacity-70 disabled:hover:translate-y-0 flex justify-center items-center gap-2">
+                    {isSubmitting ? (
+                      <><Loader2 className="w-5 h-5 animate-spin" /> Sending...</>
+                    ) : (
+                      'Send Message'
+                    )}
                   </button>
                 </form>
               </div>
@@ -249,6 +310,20 @@ function App() {
           </div>
         </div>
       </footer>
+
+      {/* Floating WhatsApp Button */}
+      <a 
+        href="https://wa.me/15551234567" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="fixed bottom-6 right-6 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg hover:bg-green-400 hover:scale-110 transition-all z-50 group"
+        aria-label="Chat on WhatsApp"
+      >
+        <MessageCircle className="w-7 h-7" />
+        <span className="absolute right-full mr-4 bg-dark-800 text-white text-sm px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-slate-700">
+          Chat with us
+        </span>
+      </a>
     </div>
   );
 }
