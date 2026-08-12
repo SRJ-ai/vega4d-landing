@@ -1,320 +1,246 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion';
-import { Hand, Eye, Zap, Circle, Sparkles, ChevronRight, MessageCircle, CheckCircle, Loader2 } from 'lucide-react';
-import { supabase } from './lib/supabase';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check } from 'lucide-react';
 
-// Animation variants
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
-};
-
-const stagger = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
-};
-
-// Advanced 3D Tilt Card Component
-const TiltCard = ({ children, className, accentColor = 'rgba(255,178,77,0.1)' }) => {
-  const ref = useRef(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
-
-  const handleMouseMove = (e) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      ref={ref}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        rotateY,
-        rotateX,
-        transformStyle: "preserve-3d",
-      }}
-      className={`relative rounded-3xl bg-[var(--color-void)] border border-white/5 shadow-2xl transition-all duration-300 ${className}`}
-    >
-      <div
-        className="absolute inset-0 z-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100 rounded-3xl pointer-events-none"
-        style={{
-          background: `radial-gradient(circle at center, ${accentColor}, transparent 70%)`
-        }}
-      />
-      <div style={{ transform: "translateZ(50px)" }} className="relative z-10 w-full h-full">
-        {children}
-      </div>
-    </motion.div>
-  );
-};
-
-// Advanced Spotlight Hero Background
-const SpotlightHero = () => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
+const useTypewriter = (text, speed = 38, startDelay = 600) => {
+  const [displayed, setDisplayed] = useState('');
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const handleMouseMove = ({ clientX, clientY }) => {
-      mouseX.set(clientX);
-      mouseY.set(clientY);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
+    let timeout;
+    let interval;
+    timeout = setTimeout(() => {
+      let i = 0;
+      interval = setInterval(() => {
+        setDisplayed(text.slice(0, i + 1));
+        i++;
+        if (i >= text.length) {
+          clearInterval(interval);
+          setDone(true);
+        }
+      }, speed);
+    }, startDelay);
 
-  return (
-    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-      <motion.div
-        className="absolute inset-0 opacity-50"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              600px circle at ${mouseX}px ${mouseY}px,
-              rgba(255, 178, 77, 0.15),
-              transparent 80%
-            )
-          `,
-        }}
-      />
-      <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-[var(--color-ember)] opacity-20 rounded-full blur-[100px] animate-pulse"></div>
-    </div>
-  );
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
+  }, [text, speed, startDelay]);
+
+  return { displayed, done };
 };
 
 function App() {
-  const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', message: '' });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [selectedServices, setSelectedServices] = useState([]);
+  const videoRef = useRef(null);
+  const prevXRef = useRef(null);
   
-  const { scrollYProgress } = useScroll();
-  const yDrift = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const { displayed, done } = useTypewriter("we'd love to\nhear from you!");
 
-  const handleInputChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (window.innerWidth < 1024) return;
+      if (!videoRef.current || isNaN(videoRef.current.duration)) return;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setSubmitStatus(null);
-    try {
-      const { error } = await supabase.from('contacts').insert([
-        { first_name: formData.firstName, last_name: formData.lastName, email: formData.email, message: formData.message }
-      ]);
-      if (error) throw error;
-      setSubmitStatus('success');
-      setFormData({ firstName: '', lastName: '', email: '', message: '' });
-    } catch (error) {
-      console.error(error);
-      setSubmitStatus('error');
-    } finally {
-      setIsSubmitting(false);
+      if (prevXRef.current === null) {
+        prevXRef.current = e.clientX;
+        return;
+      }
+
+      const deltaX = e.clientX - prevXRef.current;
+      prevXRef.current = e.clientX;
+
+      const deltaScrub = (deltaX / window.innerWidth) * 0.8 * videoRef.current.duration;
+      let targetTime = videoRef.current.currentTime + deltaScrub;
+      
+      targetTime = Math.max(0, Math.min(targetTime, videoRef.current.duration));
+      videoRef.current.currentTime = targetTime;
+    };
+
+    const handleSeeked = () => {
+      // Ensure smooth tracking frame to frame
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    if (videoRef.current) {
+      videoRef.current.addEventListener('seeked', handleSeeked);
     }
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      if (videoRef.current) {
+        videoRef.current.removeEventListener('seeked', handleSeeked);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const checkMobileAutoplay = () => {
+      if (window.innerWidth < 1024 && videoRef.current) {
+        videoRef.current.autoplay = true;
+        videoRef.current.play().catch(e => console.error("Autoplay prevented:", e));
+      }
+    };
+    checkMobileAutoplay();
+    window.addEventListener('resize', checkMobileAutoplay);
+    return () => window.removeEventListener('resize', checkMobileAutoplay);
+  }, []);
+
+  const services = ["Brand", "Digital", "Campaign", "Other"];
+  const navLinks = ["Labs", "Studio", "Openings", "Shop"];
+
+  const toggleService = (service) => {
+    setSelectedServices(prev => 
+      prev.includes(service) ? prev.filter(s => s !== service) : [...prev, service]
+    );
   };
 
-  const heroHeading = "Robotic Dexterity".split(" ");
-
   return (
-    <div className="min-h-screen bg-[var(--color-void)] text-[var(--color-bone)] font-sans selection:bg-[var(--color-gold)]/30 relative">
+    <div className="relative bg-white text-neutral-900 font-sans selection:bg-[#EAECE9] selection:text-[#1C2E1E] antialiased overflow-x-hidden flex flex-col lg:block lg:min-h-screen">
       
-      {/* Global Film Grain & Texture */}
-      <div className="noise-overlay"></div>
+      {/* Interactive Navbar */}
+      <header className="fixed top-0 inset-x-0 z-20 px-5 sm:px-8 py-4 sm:py-5 flex flex-row justify-between items-center bg-transparent">
+        {/* Logo */}
+        <div className="flex flex-row gap-3 items-center">
+          <span className="text-[21px] sm:text-[26px] tracking-tight text-black font-medium select-none">
+            Mainframe&reg;
+          </span>
+          <span className="text-[25px] sm:text-[30px] text-black select-none tracking-[-0.02em] font-medium leading-none mb-1">
+            &#10033;
+          </span>
+        </div>
+        
+        {/* Desktop Nav Links */}
+        <div className="hidden md:flex flex-row text-[23px] text-black">
+          {navLinks.map((link, idx) => (
+            <React.Fragment key={link}>
+              <a href="#" className="hover:opacity-60 transition-opacity">{link}</a>
+              {idx < navLinks.length - 1 && (
+                <span className="opacity-40">,&nbsp;</span>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
 
-      <div className="relative z-10">
-        {/* Nav - Minimalist */}
-        <nav className="fixed w-full z-50 glass border-b border-white/5">
-          <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className="flex items-center gap-3">
-              <Sparkles className="w-5 h-5 text-[var(--color-bone)]" />
-              <span className="font-bold text-xl tracking-[0.2em] uppercase text-[var(--color-bone)]">Vega4D</span>
-            </motion.div>
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.2 }} className="hidden md:flex items-center space-x-10 text-sm tracking-widest uppercase">
-              <a href="#platform" className="hover:text-[var(--color-gold)] transition-colors">Platform</a>
-              <a href="#contact" className="hover:text-[var(--color-gold)] transition-colors">Enterprise</a>
-            </motion.div>
-          </div>
-        </nav>
-
-        {/* Hero Section - Spotlight Interactive */}
-        <section className="min-h-screen flex items-center pt-20 relative">
-          <SpotlightHero />
-
-          <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
-            <motion.div variants={stagger} initial="hidden" animate="visible" className="max-w-4xl">
-              <motion.div variants={fadeUp} className="mb-6">
-                <span className="text-[var(--color-gold)] tracking-[0.3em] uppercase text-xs font-semibold">
-                  Ascension through precision
-                </span>
-              </motion.div>
-              
-              <h1 className="text-6xl md:text-8xl font-light tracking-tight mb-8 leading-[1.05]">
-                {heroHeading.map((word, idx) => (
-                  <motion.span
-                    key={idx}
-                    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    transition={{ duration: 0.8, delay: idx * 0.15 + 0.2, ease: "easeOut" }}
-                    className="inline-block mr-4 font-semibold text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-gold)] to-[var(--color-bone)] text-glow-gold"
-                  >
-                    {word}
-                  </motion.span>
-                ))}
-                <br />
-                <motion.span
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
-                >
-                  Perfected.
-                </motion.span>
-              </h1>
-              
-              <motion.p variants={fadeUp} className="text-xl md:text-2xl text-white/50 font-light max-w-2xl leading-relaxed mb-12">
-                We capture human kinematics in a multi-modal void. Zero information loss. Sub-millimeter fidelity. The definitive dataset for VLA foundation models.
-              </motion.p>
-              
-              <motion.div variants={fadeUp} className="flex gap-6 items-center">
-                <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="group relative inline-flex items-center justify-center bg-[var(--color-bone)] text-[var(--color-void)] px-8 py-4 text-sm tracking-widest uppercase font-bold overflow-hidden transition-all hover:scale-105">
-                  <span className="relative z-10 flex items-center gap-2">
-                    Initiate Sequence <ChevronRight className="w-4 h-4" />
-                  </span>
-                  <div className="absolute inset-0 bg-[var(--color-gold)] opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                </a>
-              </motion.div>
-            </motion.div>
-          </div>
-          
-          {/* Crystalline Iridescent floating element */}
-          <motion.div style={{ y: yDrift }} className="absolute bottom-20 right-20 w-[400px] h-[400px] opacity-30 mix-blend-screen pointer-events-none hidden lg:block">
-            <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_center,var(--color-violet),transparent_60%)] blur-[60px]"></div>
-            <div className="absolute top-1/4 right-1/4 w-[200px] h-[200px] rounded-full bg-[radial-gradient(circle_at_center,var(--color-cyan),transparent_60%)] blur-[40px]"></div>
-          </motion.div>
-        </section>
-
-        {/* 3D Tilt Cards Montage Section */}
-        <section id="platform" className="py-40 relative border-t border-white/5 bg-[var(--color-void)]">
-          <div className="max-w-7xl mx-auto px-6 perspective-[2000px]">
-            <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} variants={stagger} className="mb-32 flex flex-col items-center text-center">
-              <motion.h2 variants={fadeUp} className="text-3xl md:text-5xl font-light tracking-wide mb-6">
-                The Anatomy of <span className="text-[var(--color-gold)] italic">Motion</span>
-              </motion.h2>
-              <motion.p variants={fadeUp} className="text-white/50 max-w-2xl mx-auto font-light leading-relaxed">
-                Our capture pipeline isolates pure interaction. High contrast. Sharp focus.
-              </motion.p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}>
-                <TiltCard className="aspect-[4/5] flex flex-col items-center justify-center group" accentColor="rgba(255,178,77,0.1)">
-                  <Eye className="w-16 h-16 text-white/20 mb-8 group-hover:text-[var(--color-gold)] transition-colors duration-700" strokeWidth={1} />
-                  <h3 className="text-sm tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors">Perception</h3>
-                </TiltCard>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.2 }}>
-                <TiltCard className="aspect-[4/5] flex flex-col items-center justify-center group" accentColor="rgba(138,107,255,0.1)">
-                  <Hand className="w-16 h-16 text-white/20 mb-8 group-hover:text-[var(--color-violet)] transition-colors duration-700" strokeWidth={1} />
-                  <h3 className="text-sm tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors">Kinematics</h3>
-                </TiltCard>
-              </motion.div>
-
-              <motion.div initial={{ opacity: 0, y: 50 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: 0.4 }}>
-                <TiltCard className="aspect-[4/5] flex flex-col items-center justify-center group" accentColor="rgba(79,195,255,0.1)">
-                  <Zap className="w-16 h-16 text-white/20 mb-8 group-hover:text-[var(--color-cyan)] transition-colors duration-700" strokeWidth={1} />
-                  <h3 className="text-sm tracking-[0.2em] uppercase text-white/80 group-hover:text-white transition-colors">Actuation</h3>
-                </TiltCard>
-              </motion.div>
-            </div>
-          </div>
-        </section>
-
-        {/* Single Shock Cut */}
-        <section className="py-32 bg-[var(--color-void)] border-y border-[var(--color-danger)]/20 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,42,42,0.05),transparent_60%)] mix-blend-screen"></div>
-          <div className="max-w-7xl mx-auto px-6 text-center relative z-10">
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.3 }} className="inline-flex items-center justify-center relative">
-              <Circle className="w-32 h-32 text-[var(--color-danger)] opacity-80 animate-pulse" strokeWidth={0.5} />
-              <div className="absolute font-mono text-[var(--color-danger)] text-xs tracking-widest uppercase text-glow-danger whitespace-nowrap">
-                Override
-              </div>
-            </motion.div>
-            <h2 className="mt-12 text-4xl font-light text-[var(--color-danger)] tracking-tight">Zero latency. Infinite scale.</h2>
-          </div>
-        </section>
-
-        {/* Contact Void */}
-        <section id="contact" className="py-40 relative">
-          <div className="max-w-3xl mx-auto px-6">
-             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="bg-[var(--color-void)] border border-white/5 shadow-2xl p-12 relative overflow-hidden rounded-3xl">
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--color-violet)]/10 blur-[80px] -translate-y-1/2 translate-x-1/2"></div>
-                
-                <motion.h2 variants={fadeUp} className="text-3xl font-light tracking-wide mb-2">Connect to the Hive</motion.h2>
-                <motion.p variants={fadeUp} className="text-white/40 mb-10 text-sm tracking-wide">Secure transmission channel for enterprise data requirements.</motion.p>
-                
-                <motion.form variants={fadeUp} className="space-y-8 relative z-10" onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-2 gap-8">
-                    <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light" placeholder="FIRST NAME" />
-                    <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light" placeholder="LAST NAME" />
-                  </div>
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light" placeholder="ORGANIZATION EMAIL" />
-                  <textarea name="message" value={formData.message} onChange={handleInputChange} required rows="3" className="w-full bg-transparent border-b border-white/20 py-3 text-[var(--color-bone)] placeholder:text-white/20 focus:outline-none focus:border-[var(--color-gold)] transition-colors rounded-none font-light resize-none" placeholder="TRANSMISSION DETAILS..."></textarea>
-                  
-                  {submitStatus === 'success' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-green-400 text-sm tracking-wider flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4" /> TRANSMISSION LOGGED
-                    </motion.div>
-                  )}
-                  {submitStatus === 'error' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[var(--color-danger)] text-sm tracking-wider">
-                      TRANSMISSION FAILED. RETRY.
-                    </motion.div>
-                  )}
-
-                  <button type="submit" disabled={isSubmitting} className="group relative inline-flex items-center justify-center bg-white/5 border border-white/20 text-[var(--color-bone)] px-8 py-4 text-xs tracking-[0.2em] uppercase overflow-hidden transition-all hover:bg-[var(--color-gold)] hover:text-[var(--color-void)] hover:border-transparent w-full">
-                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Transmit'}
-                  </button>
-                </motion.form>
-             </motion.div>
-          </div>
-        </section>
-
-        {/* Footer */}
-        <footer className="border-t border-white/10 bg-[var(--color-void)] py-12 relative z-10">
-          <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-xs uppercase tracking-widest text-white/30">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4" />
-              <span>Vega4D // {new Date().getFullYear()}</span>
-            </div>
-            <div className="flex gap-10">
-              <a href="#" className="hover:text-white/60 transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white/60 transition-colors">Terms</a>
-            </div>
-          </div>
-        </footer>
-
-        {/* Minimalist WhatsApp */}
-        <a href="https://wa.me/15551234567" target="_blank" rel="noopener noreferrer" className="fixed bottom-8 right-8 w-12 h-12 border border-white/20 rounded-full flex items-center justify-center text-white/50 hover:text-[var(--color-gold)] hover:border-[var(--color-gold)] transition-all z-50 mix-blend-screen backdrop-blur-md">
-          <MessageCircle className="w-5 h-5" />
+        {/* Desktop CTA */}
+        <a href="#contact" className="hidden md:block text-[23px] text-black underline underline-offset-2 hover:opacity-60 transition-opacity">
+          Get in touch
         </a>
+
+        {/* Mobile Hamburger */}
+        <button 
+          className="md:hidden flex flex-col justify-center items-center gap-[5px] w-6 h-6 relative z-30" 
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          <span className={`w-6 h-[2px] bg-black block transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-[7px]' : ''}`} />
+          <span className={`w-6 h-[2px] bg-black block transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`} />
+          <span className={`w-6 h-[2px] bg-black block transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`} />
+        </button>
+      </header>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`fixed inset-0 z-10 bg-white/95 backdrop-blur-sm transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        <div className="flex flex-col items-center justify-center h-full gap-8 text-2xl font-medium">
+          {navLinks.map((link) => (
+            <a key={link} href="#" onClick={() => setIsMobileMenuOpen(false)}>{link}</a>
+          ))}
+          <a href="#contact" className="underline underline-offset-4" onClick={() => setIsMobileMenuOpen(false)}>Get in touch</a>
+        </div>
+      </div>
+
+      {/* Background Video Component */}
+      <div className="order-last lg:order-none relative lg:absolute lg:inset-0 lg:z-0 overflow-hidden pointer-events-none w-full aspect-square md:aspect-video lg:aspect-auto lg:h-full bg-neutral-50 lg:bg-transparent">
+        <video 
+          ref={videoRef}
+          className="w-full h-full object-cover object-right lg:object-right-bottom" 
+          muted 
+          playsInline 
+          preload="auto" 
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260601_110537_3a579fa0-7bbc-4d94-9d25-0e816c7840f5.mp4" 
+        />
+      </div>
+
+      {/* Content Layout Container */}
+      <div className="relative z-10 flex flex-col order-first lg:order-none w-full bg-white lg:bg-transparent pb-8 lg:pb-0 lg:min-h-screen">
+        <main id="spade-hero" className="w-full max-w-7xl mx-auto px-6 py-12 flex-1 flex flex-col justify-center mt-20 lg:mt-0">
+          
+          {/* Typewriter Hook and Headline */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <h1 className="text-5xl md:text-6xl lg:text-[76px] font-normal tracking-tight text-black leading-[1.08] mb-8 select-none w-full whitespace-pre-wrap">
+              {displayed}
+              {!done && <span className="inline-block w-[2px] h-[1.1em] bg-black align-middle ml-[2px] animate-blink" />}
+            </h1>
+          </motion.div>
+
+          {/* Secondary Description Text */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}>
+            <p className="text-lg md:text-xl text-[#5A635A] leading-relaxed font-normal mb-14 max-w-2xl">
+              Whether you have questions, feedback, <br className="hidden sm:block" /> drop us a message and we'll get back to you as soon as possible.
+            </p>
+          </motion.div>
+
+          {/* Interactive Multi-Select Service Pills */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-medium tracking-tight mb-2">What sort of service?</h2>
+            <p className="opacity-85 text-[#738273] mb-8">Select all that apply</p>
+            
+            <div className="flex flex-wrap gap-3">
+              {services.map(service => {
+                const isActive = selectedServices.includes(service);
+                return (
+                  <motion.button
+                    key={service}
+                    onClick={() => toggleService(service)}
+                    className={`px-5 py-3 rounded-full flex items-center gap-2 transition-all duration-300 ${isActive ? 'bg-[#1C2E1E] text-white shadow-md shadow-emerald-950/5 transform' : 'bg-white text-[#1C2E1E] border border-[#F1F3F1] hover:bg-[#F1F3F1]/55'}`}
+                  >
+                    {isActive && (
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
+                         <Check className="w-4 h-4" />
+                      </motion.div>
+                    )}
+                    {service}
+                  </motion.button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Contingent Feedback Status Banner */}
+          <div className="min-h-[60px] max-w-md">
+            <AnimatePresence mode="wait">
+              {selectedServices.length === 0 ? (
+                <motion.div
+                  key="empty"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 0.5, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="italic text-xs pt-4"
+                >
+                  Please click to select services above.
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="active"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden mt-4"
+                >
+                  <div className="bg-[#FAFBF9] border border-[#F1F3F1] rounded-2xl p-4 flex justify-between items-center">
+                    <span className="text-sm font-medium text-[#1C2E1E]">
+                      Ready to inquire about: {selectedServices.join(", ")}
+                    </span>
+                    <button className="text-[#4D6D47] uppercase text-xs font-bold tracking-wider hover:opacity-70 transition-opacity ml-4 flex-shrink-0">
+                      Let's Go &rarr;
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+        </main>
       </div>
     </div>
   );
