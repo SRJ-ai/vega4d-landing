@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { animate } from 'animejs';
-import { ArrowUpRight, CheckCircle } from '@phosphor-icons/react';
+import { ArrowUpRight, CheckCircle, Calendar, WhatsappLogo } from '@phosphor-icons/react';
 import { MagneticCta } from './primitives/MagneticCta';
 import { SectionHead } from './primitives/SectionHead';
 import { access, brand } from '../data/site';
@@ -221,6 +221,22 @@ export function RequestAccess() {
                     Writing to the queue
                   </span>
                 ) : null}
+              </div>
+
+              <div className="mt-10 border-t border-[var(--line-100)] pt-6">
+                <p className="u-mono mb-4 text-[10px] tracking-[0.16em] text-[var(--text-300)] uppercase">
+                  Or connect with us directly
+                </p>
+                <div className="flex flex-wrap items-center gap-4">
+                  <a href="https://cal.com/vega4d" target="_blank" rel="noopener noreferrer" className="u-btn u-btn--ghost !py-2.5 !text-[11px] !normal-case no-underline">
+                    <Calendar size={16} weight="duotone" />
+                    cal.com/vega4d
+                  </a>
+                  <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" className="u-btn u-btn--ghost !py-2.5 !text-[11px] !normal-case no-underline">
+                    <WhatsappLogo size={16} weight="duotone" />
+                    WhatsApp
+                  </a>
+                </div>
               </div>
 
               <div aria-live="polite" className="mt-4">
