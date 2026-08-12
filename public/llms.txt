@@ -1,0 +1,17 @@
+# Vega4D
+
+Vega4D is a platform for sub-millimeter human manipulation data, captured on our own rig and shipped as training-ready tensors.
+
+## What we do
+- Capture: Twelve calibrated cameras and an instrumented glove record hands doing real work.
+- Vectorize: 21-keypoint skeletons per hand with 6-DoF rotation.
+- Validate: Sequences are replayed against source footage; anything drifting past 0.8mm tolerance is cut.
+- Ship: Data packed into sharded tensors (WebDataset format).
+
+## Offerings
+We provide research, lab, and enterprise tiers for accessing datasets like DEX-1M, TOOL-320K, and REACH-2M. We also prepare custom datasets for specific training requirements.
+
+## Contact
+Email: vega4d.marketing@gmail.com
+WhatsApp: +91 83092 10440
+Schedule a call: https://cal.com/vega4d

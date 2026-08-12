@@ -5,6 +5,7 @@ import { Datasets } from '../components/Datasets';
 import { Coverage } from '../components/Coverage';
 import { Integration } from '../components/Integration';
 import { AccessTiers } from '../components/AccessTiers';
+import { FAQ } from '../components/FAQ';
 import { RequestAccess } from '../components/RequestAccess';
 
 export default function Home() {
@@ -17,6 +18,7 @@ export default function Home() {
       <Coverage />
       <Integration />
       <AccessTiers />
+      <FAQ />
       <RequestAccess />
     </main>
   );

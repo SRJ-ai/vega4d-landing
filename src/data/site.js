@@ -207,6 +207,28 @@ export const tiers = {
   ],
 };
 
+export const faq = {
+  heading: 'Frequently asked questions.',
+  items: [
+    {
+      q: 'Do you offer custom data collection?',
+      a: 'Yes. If your model requires specific tasks, tools, or objects, we can run dedicated capture sessions on our rig. This is available on our Enterprise tier.'
+    },
+    {
+      q: 'What is the licensing model?',
+      a: 'Research access is granted on a non-commercial, citation basis. Lab and Enterprise tiers receive commercial, per-seat licenses for training proprietary models.'
+    },
+    {
+      q: 'Can I access the raw footage?',
+      a: 'The raw synchronized RGB and depth feeds are available on request for Lab and Enterprise customers who wish to re-derive keypoints or run custom computer vision pipelines.'
+    },
+    {
+      q: 'How do you handle drift and validation?',
+      a: 'Every captured sequence is automatically replayed against the source video. If the computed skeleton drifts more than 0.8mm from ground truth, the sequence is rejected.'
+    }
+  ]
+};
+
 export const access = {
   heading: 'Tell us what you are training.',
   body: 'One engineer reads every request. If your task is outside what we capture today, we will say so rather than sell you the nearest set. We also collect data and prepare custom datasets for various specific training requirements.',
