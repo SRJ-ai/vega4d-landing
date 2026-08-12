@@ -104,6 +104,30 @@ export function RequestAccess() {
       return;
     }
 
+    // Optional email notification via Web3Forms
+    const accessKey = import.meta.env.VITE_WEB3FORMS_KEY;
+    if (accessKey) {
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+          body: JSON.stringify({
+            access_key: accessKey,
+            name: `${values.firstName.trim()} ${values.lastName.trim()}`,
+            email: values.email.trim(),
+            message: values.message.trim(),
+            subject: 'New Access Request for Vega4D',
+            from_name: 'Vega4D Automated System',
+          }),
+        });
+      } catch (err) {
+        console.error('Failed to send email notification:', err);
+      }
+    }
+
     setStatus('done');
   };
 

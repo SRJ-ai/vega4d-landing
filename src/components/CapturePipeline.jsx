@@ -58,7 +58,9 @@ export function CapturePipeline() {
           <div className="sticky top-0 h-[100dvh] overflow-hidden border-t border-[var(--line-100)]">
             <motion.div className="flex h-full" style={{ width: `${count * 100}%`, x }}>
               {pipeline.stages.map((stage) => (
-                <StagePanel key={stage.key} stage={stage} />
+                <div key={stage.key} style={{ width: `${100 / count}%` }} className="h-full shrink-0">
+                  <StagePanel stage={stage} />
+                </div>
               ))}
             </motion.div>
 
