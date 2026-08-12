@@ -7,7 +7,7 @@ export function Environments() {
             Domestic and industrial capture
           </h2>
           <p className="mt-6 text-[1.125rem] leading-relaxed text-[var(--text-200)]">
-            Our clean-room rigs are modular and can be deployed to simulate the exact environments your physical AI needs to master.
+            Our clean-room rigs are modular and can be deployed to simulate the exact environments your models need to master.
           </p>
         </div>
 
@@ -18,7 +18,7 @@ export function Environments() {
           />
           <EnvironmentCard 
             title="Factories & industrial sites"
-            description="We deploy heavy-duty tools, assembly lines, and mechanical components to capture high-load industrial workflows, enabling your robots to learn force application and precision insertion."
+            description="We deploy heavy-duty tools, assembly lines, and mechanical components to capture high-load industrial workflows, enabling your systems to learn force application and precision insertion."
           />
         </div>
       </div>

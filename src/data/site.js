@@ -27,7 +27,7 @@ export const nav = [
 ];
 
 export const hero = {
-  headline: ['Robotic dexterity,', 'perfected.'],
+  headline: ['Instrument-grade data,', 'perfected.'],
   subtext:
     'Sub-millimeter human manipulation data, captured on our own rig and shipped as training-ready tensors. We also collect data and prepare custom datasets for various trainings.',
   secondaryCta: { label: 'Read the spec sheet', href: '#datasets' },

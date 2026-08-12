@@ -3,7 +3,7 @@ export function TrustedBy() {
     <section className="relative w-full border-t border-[var(--line-100)] bg-[var(--ink-100)] py-12">
       <div className="u-shell flex flex-col items-center justify-center gap-6">
         <p className="u-mono text-center text-[11px] tracking-[0.14em] text-[var(--text-300)] uppercase">
-          Trusted by teams building physical AI
+          Trusted by teams building embodied AI and computer vision models
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 opacity-60 grayscale transition-all duration-300 hover:grayscale-0 hover:opacity-100">
           {/* Placeholder text-logos for academic/industry partners */}

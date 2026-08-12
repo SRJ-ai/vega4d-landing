@@ -3,7 +3,7 @@ export function Applications() {
     "Pretraining vision-language-action (VLA) models",
     "Learning fine-grained task structure (affordances, slippage)",
     "High-fidelity simulation seeding and scenario generation",
-    "Benchmarking robotic dexterity and generalization",
+    "Benchmarking model dexterity and generalization",
     "Improving robustness across complex manipulation tasks"
   ];
 
@@ -15,7 +15,7 @@ export function Applications() {
             What teams use Vega4D for
           </h2>
           <p className="mt-6 text-[1.125rem] leading-relaxed text-[var(--text-200)]">
-            Our instrument-grade capture goes far beyond simple imitation learning, enabling the next generation of physical AI capabilities.
+            Our instrument-grade capture goes far beyond simple imitation learning, enabling the next generation of computer vision and embodied AI capabilities.
           </p>
         </div>
 
