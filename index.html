@@ -19,6 +19,39 @@
     <meta name="twitter:title" content="Vega4D" />
     <meta name="twitter:description" content="Vega4D captures human manipulation at sub-millimeter fidelity and ships it as training-ready datasets for Vision-Language-Action models." />
     <link rel="canonical" href="https://vega4d.duckdns.org/" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Vega4D",
+      "url": "https://vega4d.duckdns.org/",
+      "logo": "https://vega4d.duckdns.org/favicon.svg",
+      "description": "Sub-millimeter human manipulation data, captured and shipped as training-ready datasets for Vision-Language-Action models."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "DataCatalog",
+      "name": "Vega4D Robotics Datasets",
+      "description": "Training-ready tensors for robotic dexterity and hand tool manipulation.",
+      "url": "https://vega4d.duckdns.org/#datasets",
+      "dataset": [
+        {
+          "@type": "Dataset",
+          "name": "DEX-1M: Bimanual dexterity",
+          "description": "Two hands, one object, sustained contact. Assembly, unscrewing, threading.",
+          "license": "Research and commercial, per-seat"
+        },
+        {
+          "@type": "Dataset",
+          "name": "TOOL-320K: Hand tool manipulation",
+          "description": "Pliers, drivers, shears, and knives held under load.",
+          "license": "Research and commercial, per-seat"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <!--
