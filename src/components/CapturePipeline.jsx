@@ -35,8 +35,10 @@ export function CapturePipeline() {
   
   // The flex container is count * 100vw wide. Moving it by -(count - 1) * 100vw is equivalent to moving it by -((count - 1) / count) * 100%.
   // For 4 items, -300vw is exactly -75%.
-  const endPercent = -((count - 1) / count) * 100;
-  const x = useTransform(scrollYProgress, [0.04, 0.96], ['0%', `${endPercent}%`]);
+  const x = useTransform(scrollYProgress, (latest) => {
+    const progress = Math.max(0, Math.min(1, (latest - 0.04) / (0.96 - 0.04)));
+    return `-${progress * 75}%`;
+  });
   const railWidth = useTransform(scrollYProgress, [0.04, 0.96], ['12%', '100%']);
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
