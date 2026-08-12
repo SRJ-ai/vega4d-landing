@@ -29,7 +29,7 @@ export const nav = [
 export const hero = {
   headline: ['Robotic dexterity,', 'perfected.'],
   subtext:
-    'Sub-millimeter human manipulation data, captured on our own rig and shipped as training-ready tensors.',
+    'Sub-millimeter human manipulation data, captured on our own rig and shipped as training-ready tensors. We also collect data and prepare custom datasets for various trainings.',
   secondaryCta: { label: 'Read the spec sheet', href: '#datasets' },
   // Readouts drawn beside the hero canvas. Live values come from the renderer, not from here.
   instrumentLabel: 'Hand kinematics, 21 keypoints',
@@ -209,7 +209,7 @@ export const tiers = {
 
 export const access = {
   heading: 'Tell us what you are training.',
-  body: 'One engineer reads every request. If your task is outside what we capture today, we will say so rather than sell you the nearest set.',
+  body: 'One engineer reads every request. If your task is outside what we capture today, we will say so rather than sell you the nearest set. We also collect data and prepare custom datasets for various specific training requirements.',
   expect: [
     'A reply within two working days',
     'A sample shard and the schema, before any contract',

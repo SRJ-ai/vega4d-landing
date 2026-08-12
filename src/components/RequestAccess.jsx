@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import { animate } from 'animejs';
-import { ArrowUpRight, CheckCircle, Calendar, WhatsappLogo } from '@phosphor-icons/react';
+import { ArrowUpRight, CheckCircle, Calendar, WhatsappLogo, EnvelopeSimple } from '@phosphor-icons/react';
 import { MagneticCta } from './primitives/MagneticCta';
 import { SectionHead } from './primitives/SectionHead';
 import { access, brand } from '../data/site';
@@ -235,6 +235,10 @@ export function RequestAccess() {
                   <a href="https://wa.me/918309210440" target="_blank" rel="noopener noreferrer" className="u-btn u-btn--ghost !py-2.5 !text-[11px] !normal-case no-underline">
                     <WhatsappLogo size={16} weight="duotone" />
                     WhatsApp
+                  </a>
+                  <a href="mailto:vega4d.marketing@gmail.com" className="u-btn u-btn--ghost !py-2.5 !text-[11px] !normal-case no-underline">
+                    <EnvelopeSimple size={16} weight="duotone" />
+                    vega4d.marketing@gmail.com
                   </a>
                 </div>
               </div>
