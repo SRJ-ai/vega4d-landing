@@ -32,13 +32,7 @@ export function CapturePipeline() {
   const count = pipeline.stages.length;
 
   const { scrollYProgress } = useScroll({ target: wrapRef, offset: ['start start', 'end end'] });
-  
-  // The flex container is count * 100vw wide. Moving it by -(count - 1) * 100vw is equivalent to moving it by -((count - 1) / count) * 100%.
-  // For 4 items, -300vw is exactly -75%.
-  const x = useTransform(scrollYProgress, (latest) => {
-    const progress = Math.max(0, Math.min(1, (latest - 0.04) / (0.96 - 0.04)));
-    return `-${progress * 75}%`;
-  });
+  const x = useTransform(scrollYProgress, [0.04, 0.96], ['0vw', `-${(count - 1) * 100}vw`]);
   const railWidth = useTransform(scrollYProgress, [0.04, 0.96], ['12%', '100%']);
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
@@ -56,13 +50,11 @@ export function CapturePipeline() {
       </div>
 
       {panned ? (
-        <motion.div ref={wrapRef} style={{ height: `${count * 100}vh` }}>
+        <div ref={wrapRef} style={{ height: `${count * 100}vh` }}>
           <div className="sticky top-0 h-[100dvh] overflow-hidden border-t border-[var(--line-100)]">
-            <motion.div className="flex h-full" style={{ width: `${count * 100}%`, x }}>
+            <motion.div className="flex h-full" style={{ x }}>
               {pipeline.stages.map((stage) => (
-                <div key={stage.key} style={{ width: `${100 / count}%` }} className="h-full shrink-0">
-                  <StagePanel stage={stage} />
-                </div>
+                <StagePanel key={stage.key} stage={stage} />
               ))}
             </motion.div>
 
@@ -92,7 +84,7 @@ export function CapturePipeline() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       ) : (
         <div className="border-t border-[var(--line-100)]">
           {pipeline.stages.map((stage) => (
@@ -112,7 +104,7 @@ export function CapturePipeline() {
 function StagePanel({ stage }) {
   return (
     <article
-      className="relative flex h-full w-full shrink-0 items-center border-r border-[var(--line-100)]"
+      className="relative flex h-full w-screen shrink-0 items-center border-r border-[var(--line-100)]"
       aria-label={stage.title}
     >
       <div className="u-guides" aria-hidden="true" />
