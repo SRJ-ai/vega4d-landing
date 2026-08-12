@@ -13,7 +13,7 @@ import { BrowserRouter } from 'react-router-dom'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/vega4d-landing/">
+    <BrowserRouter>
       <App />
     </BrowserRouter>
   </StrictMode>,
