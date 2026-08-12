@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, useMotionValueEvent, useScroll } from 'motion/react';
 import { List, X } from '@phosphor-icons/react';
+import { Link, useLocation } from 'react-router-dom';
 import { brand, nav } from '../data/site';
 
 /**
@@ -11,8 +12,20 @@ export function Nav() {
   const [lifted, setLifted] = useState(false);
   const [open, setOpen] = useState(false);
   const { scrollY } = useScroll();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
 
   useMotionValueEvent(scrollY, 'change', (v) => setLifted(v > 24));
+
+  // Ensure scroll position restores when hash changes from another page
+  useEffect(() => {
+    if (isHome && location.hash) {
+      const el = document.querySelector(location.hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [isHome, location.hash]);
 
   return (
     <header
@@ -28,30 +41,49 @@ export function Nav() {
         }}
       >
         <div className="u-shell flex h-16 items-center justify-between gap-6">
-          <a href="#top" className="flex items-center gap-3 no-underline">
+          <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex items-center gap-3 no-underline">
             <Mark />
             <span className="u-display text-[17px] tracking-[-0.02em]">{brand.name}</span>
-          </a>
+          </Link>
 
           <nav aria-label="Sections" className="hidden items-center gap-8 lg:flex">
             {nav.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="u-mono text-[11px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline transition-colors hover:text-[var(--text-100)]"
-              >
-                {item.label}
-              </a>
+              isHome ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="u-mono text-[11px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline transition-colors hover:text-[var(--text-100)]"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.href}
+                  to={`/${item.href}`}
+                  className="u-mono text-[11px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline transition-colors hover:text-[var(--text-100)]"
+                >
+                  {item.label}
+                </Link>
+              )
             ))}
           </nav>
 
           <div className="flex items-center gap-3">
-            <a
-              href="#access"
-              className="u-btn hidden !py-2.5 !text-[11px] no-underline sm:inline-flex"
-            >
-              {brand.primaryCta}
-            </a>
+            {isHome ? (
+              <a
+                href="#access"
+                className="u-btn hidden !py-2.5 !text-[11px] no-underline sm:inline-flex"
+              >
+                {brand.primaryCta}
+              </a>
+            ) : (
+              <Link
+                to="/#access"
+                className="u-btn hidden !py-2.5 !text-[11px] no-underline sm:inline-flex"
+              >
+                {brand.primaryCta}
+              </Link>
+            )}
             <button
               type="button"
               aria-expanded={open}
@@ -72,22 +104,43 @@ export function Nav() {
           className="border-b border-[var(--line-200)] bg-[var(--ink-100)] lg:hidden"
         >
           {nav.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline"
-            >
-              {item.label}
-            </a>
+            isHome ? (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.href}
+                to={`/${item.href}`}
+                onClick={() => setOpen(false)}
+                className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline"
+              >
+                {item.label}
+              </Link>
+            )
           ))}
-          <a
-            href="#access"
-            onClick={() => setOpen(false)}
-            className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--signal)] uppercase no-underline"
-          >
-            {brand.primaryCta}
-          </a>
+          {isHome ? (
+            <a
+              href="#access"
+              onClick={() => setOpen(false)}
+              className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--signal)] uppercase no-underline"
+            >
+              {brand.primaryCta}
+            </a>
+          ) : (
+            <Link
+              to="/#access"
+              onClick={() => setOpen(false)}
+              className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--signal)] uppercase no-underline"
+            >
+              {brand.primaryCta}
+            </Link>
+          )}
         </div>
       ) : null}
     </header>
