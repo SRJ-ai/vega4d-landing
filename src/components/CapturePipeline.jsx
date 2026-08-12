@@ -54,13 +54,21 @@ export function CapturePipeline() {
                 <motion.div className="h-full bg-[var(--signal)]" style={{ width: railWidth }} />
               </div>
               <div className="u-shell flex justify-between py-3">
-                {pipeline.stages.map((stage) => (
-                  <span
+                {pipeline.stages.map((stage, index) => (
+                  <button
                     key={stage.key}
-                    className="u-mono text-[10px] tracking-[0.16em] text-[var(--text-300)] uppercase"
+                    onClick={() => {
+                      if (wrapRef.current) {
+                        window.scrollTo({
+                          top: wrapRef.current.offsetTop + index * window.innerHeight,
+                          behavior: 'smooth'
+                        });
+                      }
+                    }}
+                    className="u-mono text-[10px] tracking-[0.16em] text-[var(--text-300)] uppercase hover:text-[var(--text-100)] transition-colors cursor-pointer bg-transparent border-none p-0"
                   >
                     {stage.title}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
