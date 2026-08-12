@@ -75,10 +75,13 @@ export function Hero() {
       ref={rootRef}
       className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden pt-24 pb-14 lg:pt-24"
     >
-      <div className="u-shell grid w-full items-center gap-12 lg:grid-cols-12 lg:gap-8">
+      {/* Ambient background glow */}
+      <div className="absolute top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--brand-500)] rounded-full blur-[140px] opacity-20 pointer-events-none mix-blend-screen" />
+      
+      <div className="u-shell relative z-10 grid w-full items-center gap-12 lg:grid-cols-12 lg:gap-8">
         <div className="lg:col-span-7">
           {/* Sized so the longer line stays on one line from 1024px up. */}
-          <h1 className="u-display text-[clamp(2.5rem,4.6vw,4.25rem)] text-[var(--text-100)]">
+          <h1 className="u-display text-[clamp(2.5rem,4.6vw,4.25rem)] bg-gradient-to-br from-white via-white to-[var(--brand-300)] bg-clip-text text-transparent drop-shadow-sm">
             {hero.headline.map((line) => (
               <span key={line} data-line className="block overflow-hidden pb-[0.06em]">
                 {line}
@@ -99,7 +102,12 @@ export function Hero() {
             className="mt-10 flex flex-wrap items-center gap-3"
             style={reduce ? undefined : { opacity: 0 }}
           >
-            <MagneticCta href="#access">{brand.primaryCta}</MagneticCta>
+            <div className="group relative">
+              <div className="absolute inset-0 bg-[var(--brand-500)] opacity-40 blur-md transition-opacity duration-300 group-hover:opacity-80" />
+              <div className="relative">
+                <MagneticCta href="#access">{brand.primaryCta}</MagneticCta>
+              </div>
+            </div>
             <MagneticCta href={hero.secondaryCta.href} variant="ghost">
               {hero.secondaryCta.label}
             </MagneticCta>
@@ -108,10 +116,13 @@ export function Hero() {
 
         <motion.div
           data-hero-frame
-          className="lg:col-span-5"
+          className="lg:col-span-5 relative"
           style={reduce ? undefined : { opacity: 0 }}
         >
-          <div className="u-bezel u-scanlines bg-[var(--ink-100)]">
+          {/* Subtle glow behind the instrument bezel */}
+          <div className="absolute -inset-1 bg-gradient-to-tr from-transparent via-[var(--brand-900)]/30 to-[var(--brand-500)]/20 blur-xl z-0" />
+          
+          <div className="u-bezel u-scanlines bg-[var(--ink-100)]/80 backdrop-blur-md relative z-10 border border-[var(--brand-900)]">
             <div className="h-[340px] sm:h-[420px] lg:h-[520px]">
               <HandCloud onFrame={handleFrame} />
             </div>
@@ -142,7 +153,7 @@ export function Hero() {
             </div>
           </div>
 
-          <p className="u-mono mt-3 text-[11px] tracking-[0.08em] text-[var(--text-300)]">
+          <p className="u-mono mt-4 text-[11px] tracking-[0.08em] text-[var(--text-300)] text-right">
             {hero.instrumentLabel}
           </p>
         </motion.div>

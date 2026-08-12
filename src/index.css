@@ -16,6 +16,12 @@
     box-sizing: border-box;
   }
 
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+
+
 * {
   margin: 0;
   padding: 0;
