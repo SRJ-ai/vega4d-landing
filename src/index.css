@@ -1,393 +1,372 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+/* Faces are self-hosted and imported from main.jsx, where Vite rewrites the woff2 URLs
+   into the build output. Importing them here leaves the URLs unresolved. */
+
+@import './styles/tokens.css';
+@import 'tailwindcss';
+
+/*
+  Everything below is layered. Unlayered rules outrank Tailwind's `utilities` layer, so a
+  bare `* { padding: 0 }` here would silently kill every padding utility in the app.
+*/
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
 * {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--ink-000);
+  scroll-behavior: smooth;
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: #05060a;
-  color: #f4f1ea;
+  background-color: var(--ink-000);
+  color: var(--text-100);
+  font-family: var(--font-body);
+  font-stretch: var(--stretch-body);
+  font-size: 16px;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
   overflow-x: hidden;
 }
 
-.noise-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
-  mix-blend-mode: overlay;
+/* ---------------------------------------------- browser surfaces ---- */
+/* The parts we did not draw still belong to the design system. */
+
+::selection {
+  background-color: var(--signal);
+  color: var(--ink-000);
 }
 
-.app-container {
-  min-height: 100vh;
-  position: relative;
+:root {
+  scrollbar-color: var(--line-300) var(--ink-000);
+  scrollbar-width: thin;
 }
 
-.hero-section {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-  overflow: hidden;
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-/* NAVBAR */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 50;
-  pointer-events: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
+::-webkit-scrollbar-track {
+  background: var(--ink-000);
+  border-left: 1px solid var(--line-100);
 }
 
-.navbar > * {
-  pointer-events: auto;
+::-webkit-scrollbar-thumb {
+  background: var(--line-300);
 }
 
-.nav-left, .nav-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--signal-line);
 }
 
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 3px;
 }
 
-.logo-icon {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+a,
+button,
+input,
+textarea {
+  caret-color: var(--signal);
+  font: inherit;
+  color: inherit;
 }
 
-.logo-icon svg rect {
-  fill: #ffb24d;
+a {
+  text-decoration-color: var(--line-300);
+  text-underline-offset: 0.28em;
+  text-decoration-thickness: 1px;
 }
 
-.brand-text {
-  font-weight: 500;
-  font-size: 15px;
-  letter-spacing: -0.01em;
-  display: none;
-}
-
-.menu-button {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  padding: 4px 12px 4px 4px;
-  gap: 8px;
-  cursor: pointer;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.menu-circle {
-  width: 28px;
-  height: 28px;
-  background: #ffb24d;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.menu-text {
-  color: #fff;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.tags-pill {
-  display: none;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  padding: 8px 16px;
-  align-items: center;
-  gap: 16px;
-}
-
-.tag-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.adaptive-pill {
-  display: none;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  padding: 4px 12px 4px 4px;
-  align-items: center;
-  gap: 8px;
-}
-
-.adaptive-circle {
-  width: 28px;
-  height: 28px;
-  background: #ffb24d;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.adaptive-text {
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.8);
-}
-
-/* VIDEO */
-.video-container {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-}
-
-.bg-video {
-  width: 80%;
-  height: 80%;
-  object-fit: cover;
-}
-
-/* FOOTER */
-.footer-wrapper {
-  position: relative;
-  z-index: 30;
-  background: linear-gradient(to top, #05060a 0%, rgba(5,6,10,0.8) 50%, transparent 100%);
-  padding: 120px 16px 24px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  pointer-events: none;
-}
-
-.footer-wrapper > * {
-  pointer-events: auto;
-}
-
-.footer-left {
-  display: flex;
-  flex-direction: column;
-}
-
-.subtitle-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  background-color: #ffb24d;
-  border-radius: 50%;
-}
-
-.subtitle-text {
-  font-size: 13px;
-  color: rgba(255,255,255,0.55);
-  font-weight: 400;
-}
-
-.main-heading {
-  font-weight: 300;
-  font-size: clamp(2rem, 8vw, 4.5rem);
-  letter-spacing: -0.03em;
-  line-height: 1;
-  margin-bottom: 24px;
-}
-
-.button-group {
-  display: flex;
-  gap: 12px;
-}
-
-.btn-primary {
-  background: #ffb24d;
-  color: #05060a;
-  border-radius: 999px;
-  padding: 12px 24px;
-  font-size: 13px;
+button {
+  background: none;
   border: none;
-  font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s ease;
 }
 
-.btn-primary:hover {
-  opacity: 0.8;
+canvas {
+  display: block;
 }
 
-.btn-secondary {
-  background: transparent;
-  color: #f4f1ea;
-  border-radius: 999px;
-  padding: 12px 24px;
-  font-size: 13px;
-  border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* ------------------------------------------------------- typography ---- */
+
+@layer components {
+  .u-display {
+  font-family: var(--font-display);
+  font-stretch: var(--stretch-display);
   font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn-secondary:hover {
-  background: rgba(255,255,255,0.05);
-}
-
-.footer-right {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.footer-tag {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 999px;
-  padding: 6px 16px;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-@media (min-width: 768px) {
-  .navbar {
-    padding: 24px 32px;
-  }
-  .brand-text {
-    display: block;
-  }
-  .tags-pill, .adaptive-pill {
-    display: flex;
-  }
-  .menu-circle, .adaptive-circle {
-    width: 32px;
-    height: 32px;
-  }
-  .bg-video {
-    width: 100%;
-    height: 100%;
-  }
-  .footer-wrapper {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-end;
-    padding: 160px 32px 32px 32px;
-  }
-  .main-heading {
-    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
-  }
-  .footer-right {
-    margin-bottom: 8px;
-  }
-}
-
-/* NEW SECTIONS */
-.section-light {
-  background-color: #05060a;
-  color: #f4f1ea;
-  padding: 120px 16px;
-}
-
-.section-dark {
-  background-color: #020202;
-  color: #ffffff;
-  padding: 160px 16px;
-}
-
-.section-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.grid-3 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 48px;
-  margin-top: 64px;
-}
-
-.grid-item h3 {
-  font-size: 20px;
-  font-weight: 500;
-  margin-bottom: 12px;
-  color: #ffb24d;
-}
-
-.grid-item p {
-  font-size: 15px;
-  color: rgba(255,255,255,0.6);
-  line-height: 1.6;
-}
-
-.dark-text-huge {
-  font-size: clamp(3rem, 10vw, 8rem);
-  font-weight: 300;
-  line-height: 1.1;
   letter-spacing: -0.04em;
-  background: linear-gradient(to right, #f4f1ea, #ffb24d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  line-height: 0.95;
+  text-wrap: balance;
 }
 
-.final-cta {
-  display: flex;
-  flex-direction: column;
+.u-mono {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* Every numeral on the page is a measurement, so every numeral is monospaced. */
+.u-num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1, 'zero' 1;
+  letter-spacing: -0.01em;
+}
+
+.u-measure {
+  max-width: 68ch;
+}
+
+/* ------------------------------------------------------- structure ---- */
+
+.u-shell {
+  width: 100%;
+  max-width: var(--shell);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.u-rule {
+  border-top: 1px solid var(--line-100);
+}
+
+/* Blueprint column guides. Used only where they organize real content. */
+.u-guides {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--line-100) 0 1px,
+    transparent 1px calc(100% / 6)
+  );
+  opacity: 0.55;
+}
+
+/* Corner ticks read as an instrument bezel rather than a card. */
+.u-bezel {
+  position: relative;
+  border: 1px solid var(--line-200);
+}
+
+.u-bezel::before,
+.u-bezel::after {
+  content: '';
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--signal-line);
+  border-style: solid;
+}
+
+.u-bezel::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+
+.u-bezel::after {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+/* ------------------------------------------------------- controls ---- */
+
+.u-btn {
+  --btn-bg: var(--signal);
+  --btn-fg: var(--ink-000);
+  display: inline-flex;
   align-items: center;
-  text-align: center;
-  padding: 120px 16px;
+  gap: 0.625rem;
+  white-space: nowrap;
+  padding: 0.9rem 1.5rem;
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.25s var(--ease-out),
+    transform 0.15s var(--ease-out),
+    color 0.25s var(--ease-out);
 }
 
-.final-cta h2 {
-  font-size: clamp(2rem, 5vw, 4rem);
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  margin-bottom: 32px;
+.u-btn:hover {
+  background-color: #ffc478;
 }
 
-.site-footer {
-  padding: 40px 16px;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  display: flex;
-  justify-content: space-between;
-  max-width: 1200px;
-  margin: 0 auto;
-  font-size: 12px;
-  color: rgba(255,255,255,0.5);
+.u-btn:active {
+  transform: translateY(1px);
 }
 
-@media (min-width: 768px) {
-  .section-light, .section-dark {
-    padding-left: 32px;
-    padding-right: 32px;
+.u-btn:disabled {
+  background-color: var(--ink-400);
+  color: var(--text-300);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.u-btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--text-100);
+  border: 1px solid var(--line-300);
+}
+
+.u-btn--ghost:hover {
+  background-color: var(--ink-300);
+  border-color: var(--text-300);
+  color: var(--text-100);
+}
+
+.u-field {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  background-color: var(--ink-200);
+  border: 1px solid var(--line-200);
+  color: var(--text-100);
+  font-size: 0.9375rem;
+  transition:
+    border-color 0.2s var(--ease-out),
+    background-color 0.2s var(--ease-out);
+}
+
+.u-field::placeholder {
+  color: var(--text-300);
+}
+
+.u-field:hover {
+  border-color: var(--line-300);
+}
+
+/* The border colour alone is too quiet to be the only focus indicator, so the ring stays. */
+.u-field:focus {
+  border-color: var(--signal);
+  background-color: var(--ink-300);
+}
+
+.u-field:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 2px;
+}
+
+.u-field[aria-invalid='true'] {
+  border-color: var(--signal-deep);
+}
+
+/* The playback scrubber. A real range input, so it keeps keyboard and screen reader
+   behaviour, restyled as a machined track with a square handle. */
+.v4-scrub {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  height: 22px;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.v4-scrub::-webkit-slider-runnable-track {
+  height: 22px;
+  background-image:
+    linear-gradient(var(--line-200), var(--line-200)),
+    repeating-linear-gradient(to right, var(--line-100) 0 1px, transparent 1px 5%);
+  background-size:
+    100% 1px,
+    100% 100%;
+  background-position:
+    center,
+    center;
+  background-repeat: no-repeat, repeat-x;
+}
+
+.v4-scrub::-moz-range-track {
+  height: 22px;
+  background-image:
+    linear-gradient(var(--line-200), var(--line-200)),
+    repeating-linear-gradient(to right, var(--line-100) 0 1px, transparent 1px 5%);
+  background-size:
+    100% 1px,
+    100% 100%;
+  background-position:
+    center,
+    center;
+  background-repeat: no-repeat, repeat-x;
+}
+
+.v4-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 3px;
+  height: 22px;
+  background: var(--live);
+  border: none;
+  box-shadow: 0 0 0 1px rgb(5 6 10 / 0.9);
+}
+
+.v4-scrub::-moz-range-thumb {
+  width: 3px;
+  height: 22px;
+  background: var(--live);
+  border: none;
+  border-radius: 0;
+}
+
+.v4-scrub:focus-visible {
+  outline: 1px solid var(--signal);
+  outline-offset: 4px;
+}
+
+/* --------------------------------------------------------- effects ---- */
+
+/* Fixed and non-scrolling, so the GPU never repaints it during scroll. */
+.u-grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.u-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(233 238 247 / 0.035) 0 1px,
+    transparent 1px 4px
+  );
+}
+
+}
+
+/* ------------------------------------------------- reduced motion ---- */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  .grid-3 {
-    grid-template-columns: repeat(3, 1fr);
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

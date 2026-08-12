@@ -1,0 +1,57 @@
+/*
+  Vega4D design tokens.
+  The page is dark-locked by brand decision: capture sessions run in a blacked-out
+  volume, and the site is read next to that footage. No light theme exists.
+*/
+
+:root {
+  color-scheme: dark;
+
+  /* Ground. Never pure black, so hairlines and panels can separate. */
+  --ink-000: #05060a;
+  --ink-100: #080a11;
+  --ink-200: #0b0e16;
+  --ink-300: #10141d;
+  --ink-400: #161b26;
+
+  /* Hairlines are the only container in this system. */
+  --line-100: rgb(233 238 247 / 0.07);
+  --line-200: rgb(233 238 247 / 0.13);
+  --line-300: rgb(233 238 247 / 0.24);
+
+  /* Text. Ratios measured against --ink-000. */
+  --text-100: #eef2f8; /* 17.9:1 */
+  --text-200: #a7b0c0; /* 8.9:1  */
+  --text-300: #7a8494; /* 5.3:1  */
+
+  /* Single brand signal. */
+  --signal: #ffb24d; /* 11.1:1 on ground */
+  --signal-deep: #ff7a18;
+  --signal-wash: rgb(255 178 77 / 0.12);
+  --signal-line: rgb(255 178 77 / 0.4);
+
+  /* Reserved exclusively for live or actively-tracked data. */
+  --live: #6ee7f9;
+  --live-wash: rgb(110 231 249 / 0.1);
+
+  --font-display: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Azeret Mono', ui-monospace, 'SFMono-Regular', monospace;
+
+  /* Display type runs expanded; body runs normal. The width axis is the voice. */
+  --stretch-display: 118%;
+  --stretch-body: 100%;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+
+  --shell: 1440px;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  /* One radius scale: sharp. Only genuinely circular objects opt out. */
+  --radius: 0px;
+
+  --z-grain: 60;
+  --z-nav: 50;
+  --z-raised: 10;
+}
