@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react';
+import { motion, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from 'motion/react';
 import { StageGlyph } from './canvas/StageGlyph';
 import { SectionHead } from './primitives/SectionHead';
 import { pipeline } from '../data/site';
@@ -18,6 +18,7 @@ export function CapturePipeline() {
   const wrapRef = useRef(null);
   const reduce = useReducedMotion();
   const [wide, setWide] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
     const mq = window.matchMedia('(min-width: 1024px)');
@@ -33,6 +34,14 @@ export function CapturePipeline() {
   const { scrollYProgress } = useScroll({ target: wrapRef, offset: ['start start', 'end end'] });
   const x = useTransform(scrollYProgress, [0.04, 0.96], ['0vw', `-${(count - 1) * 100}vw`]);
   const railWidth = useTransform(scrollYProgress, [0.04, 0.96], ['12%', '100%']);
+
+  useMotionValueEvent(scrollYProgress, 'change', (latest) => {
+    // The range of progress is ~0.04 to ~0.96 for the actual slide, so map it roughly.
+    let index = Math.round(latest * (count - 1));
+    if (index < 0) index = 0;
+    if (index >= count) index = count - 1;
+    setActiveIndex(index);
+  });
 
   return (
     <section id="pipeline" className="u-rule">
@@ -59,13 +68,15 @@ export function CapturePipeline() {
                     key={stage.key}
                     onClick={() => {
                       if (wrapRef.current) {
+                        const rect = wrapRef.current.getBoundingClientRect();
+                        const absoluteTop = rect.top + window.scrollY;
                         window.scrollTo({
-                          top: wrapRef.current.offsetTop + index * window.innerHeight,
+                          top: absoluteTop + index * window.innerHeight,
                           behavior: 'smooth'
                         });
                       }
                     }}
-                    className="u-mono text-[10px] tracking-[0.16em] text-[var(--text-300)] uppercase hover:text-[var(--text-100)] transition-colors cursor-pointer bg-transparent border-none p-0"
+                    className={`u-mono text-[10px] tracking-[0.16em] uppercase hover:text-[var(--text-100)] transition-colors cursor-pointer bg-transparent border-none p-0 ${activeIndex === index ? 'text-[var(--text-100)] font-medium' : 'text-[var(--text-300)]'}`}
                   >
                     {stage.title}
                   </button>
