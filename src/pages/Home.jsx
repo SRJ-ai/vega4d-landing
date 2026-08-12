@@ -1,5 +1,7 @@
 import { Hero } from '../components/Hero';
 import { TrustedBy } from '../components/TrustedBy';
+import { Environments } from '../components/Environments';
+import { Applications } from '../components/Applications';
 import { CapturePipeline } from '../components/CapturePipeline';
 import { Instrument } from '../components/Instrument';
 import { PrivacyValidation } from '../components/PrivacyValidation';
@@ -16,6 +18,8 @@ export default function Home() {
     <main>
       <Hero />
       <TrustedBy />
+      <Environments />
+      <Applications />
       <DataModalities />
       <CapturePipeline />
       <PrivacyValidation />
