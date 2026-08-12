@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform, useMotionValueEvent } from 'motion/react';
+import { motion, useReducedMotion, useScroll, useTransform, useMotionValueEvent, useMotionValue } from 'motion/react';
 import { StageGlyph } from './canvas/StageGlyph';
 import { SectionHead } from './primitives/SectionHead';
 import { pipeline } from '../data/site';
@@ -31,12 +31,37 @@ export function CapturePipeline() {
   const panned = wide && !reduce;
   const count = pipeline.stages.length;
 
-  const { scrollYProgress } = useScroll({ target: wrapRef, offset: ['start start', 'end end'] });
-  const x = useTransform(scrollYProgress, [0.04, 0.96], ['0vw', `-${(count - 1) * 100}vw`]);
-  const railWidth = useTransform(scrollYProgress, [0.04, 0.96], ['12%', '100%']);
+  const scrollYProgress = useMotionValue(0);
+
+  useEffect(() => {
+    if (!panned) return;
+    
+    const handleScroll = () => {
+      if (!wrapRef.current) return;
+      const rect = wrapRef.current.getBoundingClientRect();
+      const distance = rect.height - window.innerHeight;
+      
+      // Calculate progress based on distance scrolled past the top
+      let p = -rect.top / distance;
+      p = Math.max(0, Math.min(1, p));
+      
+      scrollYProgress.set(p);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll);
+    handleScroll();
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+    };
+  }, [panned, scrollYProgress]);
+
+  const x = useTransform(scrollYProgress, [0, 1], ['0vw', `-${(count - 1) * 100}vw`]);
+  const railWidth = useTransform(scrollYProgress, [0, 1], ['12%', '100%']);
 
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
-    // The range of progress is ~0.04 to ~0.96 for the actual slide, so map it roughly.
     let index = Math.round(latest * (count - 1));
     if (index < 0) index = 0;
     if (index >= count) index = count - 1;
