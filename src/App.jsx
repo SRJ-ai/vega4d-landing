@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect } from 'react';
+import { motion, useMotionValue, useMotionTemplate } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import './index.css';
 
@@ -18,26 +18,64 @@ const staggerContainer = {
   }
 };
 
+const SpotlightHero = () => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  useEffect(() => {
+    const handleMouseMove = ({ clientX, clientY }) => {
+      mouseX.set(clientX);
+      mouseY.set(clientY);
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  return (
+    <div className="video-container" style={{ zIndex: 0, overflow: 'hidden' }}>
+      <motion.div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          opacity: 0.5,
+          background: useMotionTemplate`
+            radial-gradient(
+              800px circle at ${mouseX}px ${mouseY}px,
+              rgba(255, 178, 77, 0.15),
+              transparent 80%
+            )
+          `,
+        }}
+      />
+      <div 
+        style={{
+          position: 'absolute',
+          top: '-20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '300px',
+          height: '300px',
+          backgroundColor: '#ff7a18',
+          opacity: 0.15,
+          borderRadius: '50%',
+          filter: 'blur(100px)'
+        }}
+      ></div>
+    </div>
+  );
+};
+
 const App = () => {
   return (
     <div className="app-container">
       
+      {/* Global Noise Overlay */}
+      <div className="noise-overlay"></div>
+
       {/* 1. HERO SECTION (100vh Locked) */}
       <div className="hero-section">
-        {/* Background Video */}
-        <div className="video-container">
-          <motion.video
-            className="bg-video"
-            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_215831_c6a8989c-d716-4d8d-8745-e972a2eec711.mp4"
-            autoPlay
-            muted
-            playsInline
-            loop
-            initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.8, ease }}
-          />
-        </div>
+        {/* Interactive Spotlight Background */}
+        <SpotlightHero />
 
         {/* Navbar */}
         <motion.nav
@@ -51,8 +89,8 @@ const App = () => {
             <div className="logo-container">
               <div className="logo-icon">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="6" y="3" width="6" height="18" rx="3" transform="rotate(-35 9 12)" fill="black" />
-                  <rect x="12" y="3" width="6" height="18" rx="3" transform="rotate(-35 15 12)" fill="black" />
+                  <rect x="6" y="3" width="6" height="18" rx="3" transform="rotate(-35 9 12)" />
+                  <rect x="12" y="3" width="6" height="18" rx="3" transform="rotate(-35 15 12)" />
                 </svg>
               </div>
               <span className="brand-text">Vega4D</span>
@@ -61,7 +99,7 @@ const App = () => {
             {/* Menu Button */}
             <button className="menu-button">
               <div className="menu-circle">
-                <Plus size={12} strokeWidth={3} color="black" />
+                <Plus size={12} strokeWidth={3} color="#05060a" />
               </div>
               <span className="menu-text">Menu</span>
             </button>
@@ -78,10 +116,10 @@ const App = () => {
             <div className="adaptive-pill">
               <div className="adaptive-circle">
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="3" cy="3" r="2" fill="white" />
-                  <circle cx="9" cy="3" r="2" fill="white" />
-                  <circle cx="3" cy="9" r="2" fill="white" />
-                  <circle cx="9" cy="9" r="2" fill="white" />
+                  <circle cx="3" cy="3" r="2" fill="#05060a" />
+                  <circle cx="9" cy="3" r="2" fill="#05060a" />
+                  <circle cx="3" cy="9" r="2" fill="#05060a" />
+                  <circle cx="9" cy="9" r="2" fill="#05060a" />
                 </svg>
               </div>
               <span className="adaptive-text">Actuation Datasets</span>
@@ -156,7 +194,7 @@ const App = () => {
           <motion.h2 variants={fadeInUp} style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 300, letterSpacing: '-0.03em' }}>
             The Anatomy of Motion
           </motion.h2>
-          <motion.p variants={fadeInUp} style={{ color: 'rgba(0,0,0,0.5)', marginTop: '16px', maxWidth: '600px', lineHeight: 1.6 }}>
+          <motion.p variants={fadeInUp} style={{ color: 'rgba(255,255,255,0.5)', marginTop: '16px', maxWidth: '600px', lineHeight: 1.6 }}>
             Our capture pipeline isolates pure interaction. High contrast. Sharp focus. Designed exclusively for the next generation of Vision-Language-Action (VLA) foundation models.
           </motion.p>
 
@@ -187,7 +225,7 @@ const App = () => {
         >
           <motion.div variants={fadeInUp}>
             <div className="subtitle-line" style={{ marginBottom: '24px' }}>
-              <div className="dot" style={{ backgroundColor: '#fff' }}></div>
+              <div className="dot" style={{ backgroundColor: '#ffb24d' }}></div>
               <span className="subtitle-text" style={{ color: 'rgba(255,255,255,0.7)' }}>Infrastructure</span>
             </div>
             <h2 className="dark-text-huge">
