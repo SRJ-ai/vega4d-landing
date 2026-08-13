@@ -1,5 +1,5 @@
 import { Hero } from '../components/Hero';
-import { TrustedBy } from '../components/TrustedBy';
+import { RigStrip } from '../components/RigStrip';
 import { Environments } from '../components/Environments';
 import { CapturePipeline } from '../components/CapturePipeline';
 import { DataModalities } from '../components/DataModalities';
@@ -17,7 +17,7 @@ export default function Home() {
   return (
     <main>
       <Hero />
-      <TrustedBy />
+      <RigStrip />
       <Environments />
       <CapturePipeline />
       <DataModalities />

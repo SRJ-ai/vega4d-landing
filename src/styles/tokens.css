@@ -1,55 +1,67 @@
 /*
   Vega4D design tokens.
-  The page is dark-locked by brand decision: capture sessions run in a blacked-out
-  volume, and the site is read next to that footage. No light theme exists.
+
+  Direction: warm dark editorial. A near-black with brown in it rather than blue, cream
+  body text, and one acid accent doing all the signalling. Display type is a high-contrast
+  serif; measurements stay monospaced. The page is dark-locked by brand decision, since
+  capture sessions run in a blacked-out volume and the site is read next to that footage.
 */
 
 :root {
   color-scheme: dark;
 
-  /* Ground. Never pure black, so hairlines and panels can separate. */
-  --ink-000: #05060a;
-  --ink-100: #080a11;
-  --ink-200: #0b0e16;
-  --ink-300: #10141d;
-  --ink-400: #161b26;
+  /* Ground. Warm near-black, never pure black, so panels can separate from it. */
+  --ink-000: #0c0a09;
+  --ink-100: #131110;
+  --ink-200: #161412;
+  --ink-300: #1e1b18;
+  --ink-400: #272320;
 
-  /* Hairlines are the only container in this system. */
-  --line-100: rgb(233 238 247 / 0.07);
-  --line-200: rgb(233 238 247 / 0.13);
-  --line-300: rgb(233 238 247 / 0.24);
+  /* Hairlines and borders. Tinted from the cream, not from grey. */
+  --line-100: rgb(240 230 211 / 0.08);
+  --line-200: rgb(240 230 211 / 0.14);
+  --line-300: rgb(240 230 211 / 0.26);
 
   /* Text. Ratios measured against --ink-000. */
-  --text-100: #eef2f8; /* 17.9:1 */
-  --text-200: #a7b0c0; /* 8.9:1  */
-  --text-300: #7a8494; /* 5.3:1  */
+  --text-100: #f0e6d3; /* 15.6:1 */
+  --text-200: #b8ad99; /* 8.6:1  */
+  --text-300: #8b8171; /* 4.9:1  */
 
-  /* Single brand signal. */
-  --signal: #ffb24d; /* 11.1:1 on ground */
-  --signal-deep: #ff7a18;
-  --signal-wash: rgb(255 178 77 / 0.12);
-  --signal-line: rgb(255 178 77 / 0.4);
+  /* Single accent. Acid lime carries every signal, action, and active state. */
+  --signal: #c8e64a; /* 12.7:1 on ground */
+  --signal-deep: #a9c72e;
+  --signal-wash: rgb(200 230 74 / 0.08);
+  --signal-line: rgb(200 230 74 / 0.35);
 
-  /* Reserved exclusively for live or actively-tracked data. */
-  --live: #6ee7f9;
-  --live-wash: rgb(110 231 249 / 0.1);
+  /* Aliases kept for components that reference --brand-*. Same ramp, prefer --signal. */
+  --brand-300: #dff08f;
+  --brand-500: #c8e64a;
+  --brand-900: #2c3310;
 
-  --font-display: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, sans-serif;
+  /* Live data reads in the accent too, at full strength, so the palette stays at one hue. */
+  --live: #d9f56b;
+  --live-wash: rgb(217 245 107 / 0.1);
+
+  --font-display: 'Bodoni Moda Variable', 'Bodoni Moda', Georgia, serif;
   --font-body: 'Archivo Variable', 'Archivo', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'Azeret Mono', ui-monospace, 'SFMono-Regular', monospace;
 
-  /* Display type runs expanded; body runs normal. The width axis is the voice. */
-  --stretch-display: 118%;
+  --stretch-display: 100%;
   --stretch-body: 100%;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
 
-  --shell: 1440px;
-  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --shell: 1240px;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
 
-  /* One radius scale: sharp. Only genuinely circular objects opt out. */
-  --radius: 0px;
+  /*
+    Shape system: actions are full pills, surfaces are 14px, inputs are 10px.
+    Every radius on the page comes from one of these three.
+  */
+  --radius-pill: 999px;
+  --radius-surface: 14px;
+  --radius-field: 10px;
 
   --z-grain: 60;
   --z-nav: 50;

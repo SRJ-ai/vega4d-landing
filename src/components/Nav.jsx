@@ -36,7 +36,7 @@ export function Nav() {
         className="border-b transition-colors duration-300"
         style={{
           borderColor: lifted ? 'var(--line-200)' : 'transparent',
-          backgroundColor: lifted ? 'rgba(5, 6, 10, 0.86)' : 'transparent',
+          backgroundColor: lifted ? 'rgba(12, 10, 9, 0.88)' : 'transparent',
           backdropFilter: lifted ? 'blur(14px)' : 'none',
         }}
       >
@@ -52,7 +52,7 @@ export function Nav() {
                 <a
                   key={item.href}
                   href={item.href}
-                  className="u-mono text-[11px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline transition-colors hover:text-[var(--text-100)]"
+                  className="text-[14.5px] text-[var(--text-200)] no-underline transition-colors hover:text-[var(--text-100)]"
                 >
                   {item.label}
                 </a>
@@ -60,7 +60,7 @@ export function Nav() {
                 <Link
                   key={item.href}
                   to={`/${item.href}`}
-                  className="u-mono text-[11px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline transition-colors hover:text-[var(--text-100)]"
+                  className="text-[14.5px] text-[var(--text-200)] no-underline transition-colors hover:text-[var(--text-100)]"
                 >
                   {item.label}
                 </Link>
@@ -72,14 +72,14 @@ export function Nav() {
             {isHome ? (
               <a
                 href="#access"
-                className="u-btn hidden !py-2.5 !text-[11px] no-underline sm:inline-flex"
+                className="u-btn hidden !py-2.5 !text-[14px] no-underline sm:inline-flex"
               >
                 {brand.primaryCta}
               </a>
             ) : (
               <Link
                 to="/#access"
-                className="u-btn hidden !py-2.5 !text-[11px] no-underline sm:inline-flex"
+                className="u-btn hidden !py-2.5 !text-[14px] no-underline sm:inline-flex"
               >
                 {brand.primaryCta}
               </Link>
@@ -90,7 +90,7 @@ export function Nav() {
               aria-controls="mobile-nav"
               aria-label={open ? 'Close menu' : 'Open menu'}
               onClick={() => setOpen((v) => !v)}
-              className="flex h-10 w-10 items-center justify-center border border-[var(--line-200)] text-[var(--text-100)] lg:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-[var(--radius-pill)] border border-[var(--line-200)] text-[var(--text-100)] lg:hidden"
             >
               {open ? <X size={16} weight="bold" /> : <List size={16} weight="bold" />}
             </button>
@@ -109,7 +109,7 @@ export function Nav() {
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline"
+                className="block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[15px] text-[var(--text-200)] no-underline"
               >
                 {item.label}
               </a>
@@ -118,7 +118,7 @@ export function Nav() {
                 key={item.href}
                 to={`/${item.href}`}
                 onClick={() => setOpen(false)}
-                className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--text-200)] uppercase no-underline"
+                className="block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[15px] text-[var(--text-200)] no-underline"
               >
                 {item.label}
               </Link>
@@ -128,7 +128,7 @@ export function Nav() {
             <a
               href="#access"
               onClick={() => setOpen(false)}
-              className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--signal)] uppercase no-underline"
+              className="block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[15px] text-[var(--signal)] no-underline"
             >
               {brand.primaryCta}
             </a>
@@ -136,7 +136,7 @@ export function Nav() {
             <Link
               to="/#access"
               onClick={() => setOpen(false)}
-              className="u-mono block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[12px] tracking-[0.14em] text-[var(--signal)] uppercase no-underline"
+              className="block border-t border-[var(--line-100)] px-[var(--gutter)] py-4 text-[15px] text-[var(--signal)] no-underline"
             >
               {brand.primaryCta}
             </Link>

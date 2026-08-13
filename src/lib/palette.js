@@ -4,15 +4,15 @@
 */
 
 export const palette = {
-  ink: '#05060a',
-  panel: '#0b0e16',
-  line: 'rgba(233, 238, 247, 0.10)',
-  lineStrong: 'rgba(233, 238, 247, 0.22)',
-  text: '#eef2f8',
-  textDim: '#7a8494',
-  signal: '#ffb24d',
-  signalDeep: '#ff7a18',
-  live: '#6ee7f9',
+  ink: '#0c0a09',
+  panel: '#131110',
+  line: 'rgba(240, 230, 211, 0.10)',
+  lineStrong: 'rgba(240, 230, 211, 0.22)',
+  text: '#f0e6d3',
+  textDim: '#8b8171',
+  signal: '#c8e64a',
+  signalDeep: '#a9c72e',
+  live: '#d9f56b',
 };
 
 /** rgba() from a hex value plus alpha, so renderers can fade a palette colour. */

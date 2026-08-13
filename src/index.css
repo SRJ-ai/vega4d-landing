@@ -111,12 +111,16 @@ canvas {
 
 @layer components {
   .u-display {
-  font-family: var(--font-display);
-  font-stretch: var(--stretch-display);
-  font-weight: 500;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-  text-wrap: balance;
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+/* The display serif carries the voice; italic is its emphasis, never a second family. */
+.u-display-em {
+  font-style: italic;
 }
 
 .u-mono {
@@ -168,28 +172,22 @@ canvas {
 .u-bezel {
   position: relative;
   border: 1px solid var(--line-200);
+  border-radius: var(--radius-surface);
+  overflow: hidden;
 }
 
-.u-bezel::before,
-.u-bezel::after {
+/* A pill of soft accent light along the top edge, so a panel reads as lit rather than
+   outlined. Replaces the square corner ticks, which fought the rounded surface. */
+.u-bezel::before {
   content: '';
   position: absolute;
-  width: 9px;
-  height: 9px;
-  border-color: var(--signal-line);
-  border-style: solid;
-}
-
-.u-bezel::before {
-  top: -1px;
-  left: -1px;
-  border-width: 1px 0 0 1px;
-}
-
-.u-bezel::after {
-  bottom: -1px;
-  right: -1px;
-  border-width: 0 1px 1px 0;
+  top: 0;
+  left: 50%;
+  width: 55%;
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(to right, transparent, var(--signal-line), transparent);
+  pointer-events: none;
 }
 
 /* ------------------------------------------------------- controls ---- */
@@ -201,14 +199,14 @@ canvas {
   align-items: center;
   gap: 0.625rem;
   white-space: nowrap;
-  padding: 0.9rem 1.5rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: var(--radius-pill);
   background-color: var(--btn-bg);
   color: var(--btn-fg);
-  font-family: var(--font-mono);
-  font-size: 0.8125rem;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
   font-weight: 500;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+  letter-spacing: -0.005em;
   transition:
     background-color 0.25s var(--ease-out),
     transform 0.15s var(--ease-out),
@@ -216,7 +214,7 @@ canvas {
 }
 
 .u-btn:hover {
-  background-color: #ffc478;
+  background-color: var(--brand-300);
 }
 
 .u-btn:active {
@@ -233,7 +231,7 @@ canvas {
 .u-btn--ghost {
   --btn-bg: transparent;
   --btn-fg: var(--text-100);
-  border: 1px solid var(--line-300);
+  border: 1px solid var(--line-200);
 }
 
 .u-btn--ghost:hover {
@@ -244,7 +242,8 @@ canvas {
 
 .u-field {
   width: 100%;
-  padding: 0.8rem 0.9rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-field);
   background-color: var(--ink-200);
   border: 1px solid var(--line-200);
   color: var(--text-100);
@@ -337,6 +336,30 @@ canvas {
 .v4-scrub:focus-visible {
   outline: 1px solid var(--signal);
   outline-offset: 4px;
+}
+
+/* Rig strip marquee. Halts entirely when the visitor asked for reduced motion. */
+.v4-marquee {
+  animation: v4-marquee-scroll 42s linear infinite;
+}
+
+.v4-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes v4-marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v4-marquee {
+    animation: none;
+  }
 }
 
 /* --------------------------------------------------------- effects ---- */

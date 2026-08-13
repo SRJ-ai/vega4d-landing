@@ -19,6 +19,30 @@ export const brand = {
   primaryCta: 'Request access',
 };
 
+/*
+  The strip under the hero. These are rig facts, not customers.
+
+  It previously carried invented customer wordmarks (NVIDIA, Stanford, DeepMind, OpenAI,
+  UC Berkeley, Meta AI). Vega4D has no such relationships on record, so those claims were
+  removed. Do not reintroduce a logo wall until there are real, permitted logos to show.
+*/
+export const rigStrip = {
+  label: 'Built for teams working on',
+  // Categories of work, not customers. Nothing here claims a relationship.
+  chips: ['Humanoids', 'Mobile manipulation', 'Industrial automation', 'VLA agents'],
+  // Rig facts, scrolled underneath the chips.
+  specs: [
+    '12 synchronised cameras',
+    '240 fps capture',
+    'Sync drift under 0.4 ms',
+    '21 keypoints per hand',
+    '6-DoF wrist rotation',
+    'Pressure-derived contact labels',
+    '0.8 mm validation tolerance',
+    'Sharded WebDataset delivery',
+  ],
+};
+
 export const nav = [
   { label: 'Pipeline', href: '#pipeline' },
   { label: 'Instrument', href: '#instrument' },
@@ -27,10 +51,20 @@ export const nav = [
 ];
 
 export const hero = {
-  headline: ['Instrument-grade data,', 'perfected.'],
+  // Sits above the headline as a pill. States the category in the visitor's own words.
+  badge: 'Manipulation data for robotics and physical AI',
+  // Four commitments under the actions. Each one is a property of how we capture.
+  assurances: [
+    'Consent-first capture',
+    'Operator compensation',
+    'PII redaction',
+    'Clear licensing',
+  ],
+  // The second line is set in italic. Emphasis stays inside the display family.
+  headline: ['Human dexterity,', 'measured to the millimeter.'],
   subtext:
-    'Sub-millimeter human manipulation data, captured on our own rig and shipped as training-ready tensors. We also collect data and prepare custom datasets for various trainings.',
-  secondaryCta: { label: 'Read the spec sheet', href: '#datasets' },
+    'We capture real hands doing real work on our own instrumented rigs, then ship it as validated, training-ready tensors with provenance attached.',
+  secondaryCta: { label: 'See what ships', href: '#datasets' },
   // Readouts drawn beside the hero canvas. Live values come from the renderer, not from here.
   instrumentLabel: 'Hand kinematics, 21 keypoints',
 };

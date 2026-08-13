@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform, useMotionValueEvent, useMotionValue } from 'motion/react';
+import { motion, useReducedMotion, useTransform, useMotionValueEvent, useMotionValue } from 'motion/react';
 import { StageGlyph } from './canvas/StageGlyph';
 import { SectionHead } from './primitives/SectionHead';
 import { pipeline } from '../data/site';

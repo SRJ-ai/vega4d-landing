@@ -1,17 +1,27 @@
 import { useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { createTimeline, stagger, splitText, utils } from 'animejs';
+import { createTimeline, stagger, utils } from 'animejs';
+import { CheckCircle } from '@phosphor-icons/react';
 import { HandCloud } from './canvas/HandCloud';
 import { MagneticCta } from './primitives/MagneticCta';
 import { brand, hero } from '../data/site';
 
 /**
- * Asymmetric split hero. Copy and the single primary action sit left; the capture
- * instrument occupies the right and bleeds to the viewport edge.
+ * Centred hero. A category pill, the headline with its second line in italic, one primary
+ * action, and the capture instrument sitting full width beneath the copy.
  *
  * The entrance is one authored moment, built as an anime.js timeline: the headline lines
  * clip up word by word, then the instrument frame draws in, then the actions arrive.
  */
+// Elements the entrance stages in. Listed here so the cleanup can restore exactly this set.
+const FADE_IN = [
+  '[data-hero-badge]',
+  '[data-hero-sub]',
+  '[data-hero-actions]',
+  '[data-hero-assurances]',
+  '[data-hero-frame]',
+];
+
 export function Hero() {
   const rootRef = useRef(null);
   const frameRefs = useRef({ frame: null, closure: null, contact: null });
@@ -21,33 +31,29 @@ export function Hero() {
     const root = rootRef.current;
     if (!root || reduce) return undefined;
 
-    const lines = Array.from(root.querySelectorAll('[data-line]'));
-    const splits = [];
-    const wordTargets = [];
+    /*
+      Whole lines rise inside their own clip, rather than word by word.
 
-    lines.forEach((line) => {
-      try {
-        const split = splitText(line, { words: { wrap: 'clip' }, chars: false });
-        const words = split?.words ?? [];
-        if (words.length) {
-          splits.push(split);
-          wordTargets.push(...words);
-        }
-      } catch {
-        // If the splitter cannot run, the line animates as a whole below.
-      }
-    });
+      Per-word splitting rewrites the headline's DOM, and this effect runs twice under
+      StrictMode: the second pass re-split the already-split markup, nested the wrappers,
+      and left the headline stranded at opacity 0. Line-level animation reads almost the
+      same and cannot desynchronise from the markup.
+    */
+    const lineInners = Array.from(root.querySelectorAll('[data-line] > span'));
+    const staged = FADE_IN.map((sel) => root.querySelector(sel)).filter(Boolean);
+
+    // Hidden from script, never from the markup, so a failed timeline cannot leave the
+    // hero blank and the copy is present with JavaScript switched off.
+    utils.set(staged, { opacity: 0 });
+    utils.set(lineInners, { y: '108%' });
 
     const tl = createTimeline({ defaults: { ease: 'outExpo' } });
 
-    if (wordTargets.length) {
-      utils.set(wordTargets, { y: '110%', opacity: 0 });
-      tl.add(wordTargets, { y: '0%', opacity: 1, duration: 1150, delay: stagger(70) }, 120);
-    } else {
-      tl.add(lines, { opacity: [0, 1], y: [26, 0], duration: 1000, delay: stagger(90) }, 120);
-    }
+    tl.add(lineInners, { y: '0%', duration: 1150, delay: stagger(110) }, 120);
 
-    tl.add('[data-hero-sub]', { opacity: [0, 1], y: [16, 0], duration: 900 }, 520)
+    tl.add('[data-hero-badge]', { opacity: [0, 1], y: [10, 0], duration: 700 }, 0)
+      .add('[data-hero-sub]', { opacity: [0, 1], y: [16, 0], duration: 900 }, 520)
+      .add('[data-hero-assurances]', { opacity: [0, 1], y: [12, 0], duration: 800 }, 860)
       .add('[data-hero-actions]', { opacity: [0, 1], y: [14, 0], duration: 900 }, 700)
       .add('[data-hero-frame]', { opacity: [0, 1], duration: 1400, ease: 'outQuad' }, 260)
       .add(
@@ -58,7 +64,9 @@ export function Hero() {
 
     return () => {
       tl.revert?.();
-      splits.forEach((split) => split.revert?.());
+      // Whatever happened to the timeline, the hero ends up readable.
+      utils.set(staged, { opacity: 1, y: 0 });
+      utils.set(lineInners, { y: '0%' });
     };
   }, [reduce]);
 
@@ -75,54 +83,61 @@ export function Hero() {
       ref={rootRef}
       className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden pt-24 pb-14 lg:pt-24"
     >
-      {/* Ambient background glow */}
-      <div className="absolute top-1/2 left-3/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[var(--brand-500)] rounded-full blur-[140px] opacity-20 pointer-events-none mix-blend-screen" />
-      
-      <div className="u-shell relative z-10 grid w-full items-center gap-12 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-7">
-          {/* Sized so the longer line stays on one line from 1024px up. */}
-          <h1 className="u-display text-[clamp(2.5rem,4.6vw,4.25rem)] bg-gradient-to-br from-white via-white to-[var(--brand-300)] bg-clip-text text-transparent drop-shadow-sm">
-            {hero.headline.map((line) => (
-              <span key={line} data-line className="block overflow-hidden pb-[0.06em]">
-                {line}
+      <div className="u-shell relative z-10 flex w-full flex-col items-center">
+        <div className="flex max-w-[56rem] flex-col items-center text-center">
+          <span
+            data-hero-badge
+            className="rounded-[var(--radius-pill)] border border-[var(--signal-line)] bg-[var(--signal-wash)] px-4 py-1.5 text-[13px] text-[var(--signal)]"
+          >
+            {hero.badge}
+          </span>
+
+          <h1 className="u-display mt-8 text-[clamp(2.25rem,5vw,4.25rem)] text-[var(--text-100)]">
+            {hero.headline.map((line, i) => (
+              <span key={line} data-line className="block overflow-hidden pb-[0.08em]">
+                <span className={`block ${i === 1 ? 'u-display-em' : ''}`}>{line}</span>
               </span>
             ))}
           </h1>
 
           <p
             data-hero-sub
-            className="mt-8 max-w-[46ch] text-[1.0625rem] text-[var(--text-200)]"
-            style={reduce ? undefined : { opacity: 0 }}
+            className="mt-7 max-w-[52ch] text-[1.0625rem] text-[var(--text-200)]"
           >
             {hero.subtext}
           </p>
 
           <div
             data-hero-actions
-            className="mt-10 flex flex-wrap items-center gap-3"
-            style={reduce ? undefined : { opacity: 0 }}
+            className="mt-9 flex flex-wrap items-center justify-center gap-3"
           >
-            <div className="group relative">
-              <div className="absolute inset-0 bg-[var(--brand-500)] opacity-40 blur-md transition-opacity duration-300 group-hover:opacity-80" />
-              <div className="relative">
-                <MagneticCta href="#access">{brand.primaryCta}</MagneticCta>
-              </div>
-            </div>
+            <MagneticCta href="#access">{brand.primaryCta}</MagneticCta>
             <MagneticCta href={hero.secondaryCta.href} variant="ghost">
               {hero.secondaryCta.label}
             </MagneticCta>
           </div>
+
+          <ul
+            data-hero-assurances
+            className="mt-9 flex flex-wrap items-center justify-center gap-x-7 gap-y-3"
+          >
+            {hero.assurances.map((item) => (
+              <li
+                key={item}
+                className="flex items-center gap-2 text-[13.5px] text-[var(--text-300)]"
+              >
+                <CheckCircle size={14} weight="regular" color="var(--signal)" />
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <motion.div
           data-hero-frame
-          className="lg:col-span-5 relative"
-          style={reduce ? undefined : { opacity: 0 }}
+          className="relative mt-16 w-full max-w-[62rem]"
         >
-          {/* Subtle glow behind the instrument bezel */}
-          <div className="absolute -inset-1 bg-gradient-to-tr from-transparent via-[var(--brand-900)]/30 to-[var(--brand-500)]/20 blur-xl z-0" />
-          
-          <div className="u-bezel u-scanlines bg-[var(--ink-100)]/80 backdrop-blur-md relative z-10 border border-[var(--brand-900)]">
+          <div className="u-bezel u-scanlines relative z-10 bg-[var(--ink-100)]">
             <div className="h-[340px] sm:h-[420px] lg:h-[520px]">
               <HandCloud onFrame={handleFrame} />
             </div>
